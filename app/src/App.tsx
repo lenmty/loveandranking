@@ -9,6 +9,36 @@ import type { Card, Language, Tier } from './types';
 
 const characters = ['Xavier', 'Zayne', 'Rafayel', 'Sylus', 'Caleb'] as const;
 type Confirmation = { type: 'delete-tier'; id: string } | { type: 'return-all' } | { type: 'full-reset' };
+const tierLabelUsesLightText = (color: string) => ['#44474c', '#45484d'].includes(color.toLowerCase());
+const exportFont = '700 14px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+const exportLineHeight = 16.8;
+
+function wrapCanvasText(context: CanvasRenderingContext2D, text: string, maxWidth: number) {
+  const words = (text.trim() || ' ').split(/\s+/u);
+  const lines: string[] = [];
+  let line = '';
+  for (const word of words) {
+    const segments: string[] = [];
+    let segment = '';
+    for (const character of Array.from(word)) {
+      const candidate = segment + character;
+      if (segment && context.measureText(candidate).width > maxWidth) {
+        segments.push(segment);
+        segment = character;
+      } else segment = candidate;
+    }
+    if (segment) segments.push(segment);
+    for (const part of segments) {
+      const candidate = line ? `${line} ${part}` : part;
+      if (line && context.measureText(candidate).width > maxWidth) {
+        lines.push(line);
+        line = part;
+      } else line = candidate;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [' '];
+}
 
 function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true as const };
@@ -100,7 +130,7 @@ function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggin
   const [draft, setDraft] = useState(tier.name);
   useEffect(() => { setDraft(tier.name); }, [tier.name]);
   const tierCards = tier.cards.map((id) => cardsById.get(id)).filter((card): card is Card => Boolean(card));
-  const darkLabel = ['#44474c', '#45484d'].includes(tier.color.toLowerCase());
+  const darkLabel = tierLabelUsesLightText(tier.color);
   return <section className={`tier-row ${reorderId === tier.id ? 'tier-row--moving' : ''}`} data-tier-index={index}>
     <div className={`tier-label ${darkLabel ? 'tier-label--dark' : ''}`} style={{ '--tier-color': tier.color } as CSSProperties}>
       {editing ? <textarea autoFocus className="tier-name-input" aria-label={t.renameTier} maxLength={70} rows={1} value={draft}
@@ -437,19 +467,34 @@ export function App() {
     try {
       const width = 1140;
       const padding = 24;
-      const labelWidth = 140;
+      const labelWidth = 160;
+      const actionRailWidth = 34;
+      const labelTextWidth = labelWidth - 22;
       const cardSize = 80;
-      const gap = 8;
-      const contentWidth = width - padding * 2 - labelWidth - 12;
+      const gap = 4;
+      const contentWidth = width - padding * 2 - labelWidth - actionRailWidth - 16;
       const columns = Math.max(1, Math.floor((contentWidth + gap) / (cardSize + gap)));
-      const heightOf = (tier: Tier) => Math.max(cardSize, Math.ceil(tier.cards.length / columns) * cardSize + Math.max(0, Math.ceil(tier.cards.length / columns) - 1) * gap);
+      const measureCanvas = document.createElement('canvas');
+      const measureContext = measureCanvas.getContext('2d');
+      if (!measureContext) throw new Error('Canvas unavailable');
+      measureContext.font = exportFont;
+      const tierLines = new Map(state.tiers.map((tier) => [tier.id, wrapCanvasText(measureContext, tier.name, labelTextWidth)]));
+      const tierHeightOf = (tier: Tier) => {
+        const cardRows = Math.max(1, Math.ceil(tier.cards.length / columns));
+        const cardHeight = cardRows * cardSize + (cardRows - 1) * gap;
+        const lines = tierLines.get(tier.id) ?? [' '];
+        const nameBoxHeight = Math.max(34, lines.length * exportLineHeight + 12);
+        return Math.max(cardSize, cardHeight, nameBoxHeight + 16);
+      };
       const rowGap = 10;
-      const height = padding * 2 + state.tiers.reduce((sum, tier) => sum + heightOf(tier), 0) + Math.max(0, state.tiers.length - 1) * rowGap;
+      const height = padding * 2 + state.tiers.reduce((sum, tier) => sum + tierHeightOf(tier), 0) + Math.max(0, state.tiers.length - 1) * rowGap;
       const canvas = document.createElement('canvas');
       canvas.width = width; canvas.height = height;
       const context = canvas.getContext('2d');
       if (!context) throw new Error('Canvas unavailable');
       const dark = state.theme === 'dark';
+      const rowFill = dark ? 'rgba(37,40,45,.8)' : 'rgba(255,255,255,.76)';
+      const rowLine = dark ? 'rgba(233,237,233,.09)' : 'rgba(39,42,45,.1)';
       context.fillStyle = dark ? '#17191d' : '#f5f5f2';
       context.fillRect(0, 0, width, height);
       const loadedImages = new Map<string, HTMLImageElement>();
@@ -458,22 +503,66 @@ export function App() {
       })));
       let y = padding;
       state.tiers.forEach((tier) => {
-        const tierHeight = heightOf(tier);
+        const tierHeight = tierHeightOf(tier);
+        const rowX = padding;
+        const rowWidth = width - padding * 2;
+        context.fillStyle = rowFill;
+        context.beginPath(); context.roundRect(rowX, y, rowWidth, tierHeight, 12); context.fill();
+        context.strokeStyle = rowLine;
+        context.lineWidth = 1;
+        context.beginPath(); context.roundRect(rowX + .5, y + .5, rowWidth - 1, tierHeight - 1, 11.5); context.stroke();
+        context.save();
+        context.beginPath();
+        context.moveTo(rowX + 12, y);
+        context.lineTo(rowX + labelWidth, y);
+        context.lineTo(rowX + labelWidth, y + tierHeight);
+        context.lineTo(rowX + 12, y + tierHeight);
+        context.quadraticCurveTo(rowX, y + tierHeight, rowX, y + tierHeight - 12);
+        context.lineTo(rowX, y + 12);
+        context.quadraticCurveTo(rowX, y, rowX + 12, y);
+        context.closePath();
+        context.clip();
+        context.globalAlpha = .84;
         context.fillStyle = tier.color;
-        context.beginPath(); context.roundRect(padding, y, width - padding * 2, tierHeight, 12); context.fill();
-        context.fillStyle = ['#44474c', '#45484d', '#33373d'].includes(tier.color.toLowerCase()) ? '#fff' : '#282a2e';
-        context.font = '600 17px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
-        context.textBaseline = 'middle';
-        context.fillText(tier.name || ' ', padding + 18, y + tierHeight / 2, labelWidth - 25);
+        context.fillRect(rowX, y, labelWidth, tierHeight);
+        context.restore();
+
+        const lines = tierLines.get(tier.id) ?? [' '];
+        const nameBoxHeight = Math.max(34, lines.length * exportLineHeight + 12);
+        const textX = rowX + 11;
+        const textY = y + (tierHeight - nameBoxHeight) / 2 + 6;
+        context.fillStyle = tierLabelUsesLightText(tier.color) ? '#fff' : dark ? '#eeefec' : '#25272a';
+        context.font = exportFont;
+        context.textBaseline = 'top';
+        lines.forEach((line, lineIndex) => context.fillText(line, textX, textY + lineIndex * exportLineHeight));
         tier.cards.forEach((id, index) => {
           const image = loadedImages.get(id); if (!image) return;
-          const x = padding + labelWidth + 12 + (index % columns) * (cardSize + gap);
+          const x = padding + labelWidth + 8 + (index % columns) * (cardSize + gap);
           const imageY = y + Math.floor(index / columns) * (cardSize + gap);
           context.drawImage(image, x, imageY, cardSize, cardSize);
         });
         y += tierHeight + rowGap;
       });
-      const link = document.createElement('a'); link.download = 'cardrank.png'; link.href = canvas.toDataURL('image/png'); link.click();
+      const png = await new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('PNG export failed')), 'image/png'));
+      const file = new File([png], 'cardrank.png', { type: 'image/png' });
+      const isIOS = /iPad|iPhone|iPod/u.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isIOS && navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: 'CardRank' });
+          return;
+        } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') return;
+        }
+      }
+      const fileUrl = URL.createObjectURL(png);
+      const link = document.createElement('a');
+      link.download = 'cardrank.png';
+      link.href = fileUrl;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(fileUrl), 60_000);
     } catch {
       dispatch({ type: 'notice', value: t.exportError });
     } finally { setExporting(false); }
