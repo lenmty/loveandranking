@@ -92,7 +92,7 @@ function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggin
   onColor: (id: string, color: string) => void; onDelete: (id: string) => void;
   onTierPointerDown: (id: string, event: PointerEvent, handle: HTMLButtonElement) => void;
   onMove: (id: string, zone: string, index: number) => void; onOpen: (id: string) => void;
-  onDragStart: (id: string) => void;
+  onDragStart: (id: string, event: PointerEvent) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -139,7 +139,7 @@ function CardInsertionSlot({ tier = false }: { tier?: boolean }) {
 
 function CardTile({ card, language, index, zone, isDragging, onOpen, onDragStart }: {
   card: Card; language: Language; index: number; zone: string; isDragging: boolean;
-  onOpen: (id: string) => void; onDragStart: (id: string) => void;
+  onOpen: (id: string) => void; onDragStart: (id: string, event: PointerEvent) => void;
 }) {
   return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${isDragging ? 'card-tile--dragging' : ''}`} data-card-id={card.id} data-card-index={index} data-card-zone={zone}>
     <button className="card-image-button" type="button" onClick={() => onOpen(card.id)} aria-label={`${labelForCharacter(card, language)} — ${card.name}`}>
@@ -147,7 +147,7 @@ function CardTile({ card, language, index, zone, isDragging, onOpen, onDragStart
       <span className="card-rarity" aria-label={`${card.rarity}★`}>{card.rarity}★</span>
     </button>
     <button className="card-drag-handle" type="button" aria-label={language === 'ru' ? 'Перетащить карточку' : 'Drag memory'} title={language === 'ru' ? 'Перетащить' : 'Drag'}
-      onPointerDown={(event) => { event.preventDefault(); onDragStart(card.id); }}><Icon name="grip" size={14}/></button>
+      onPointerDown={(event) => { event.preventDefault(); onDragStart(card.id, event.nativeEvent); }}><Icon name="grip" size={14}/></button>
   </article>;
 }
 
@@ -155,6 +155,12 @@ export function App() {
   const [state, dispatchBase] = useReducer((current: AppState, action: Parameters<typeof reducer>[1]) => reducer(current, action, cards), undefined, () => loadAppState(cards));
   const [exporting, setExporting] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const [poolDockVisible, setPoolDockVisible] = useState(false);
+  const [poolDockExpanded, setPoolDockExpanded] = useState(false);
+  const [dragPreview, setDragPreview] = useState<{ card: Card; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
+  const dragPreviewElementRef = useRef<HTMLElement | null>(null);
+  const dragPreviewOffsetRef = useRef<{ x: number; y: number } | null>(null);
+  const poolGridRef = useRef<HTMLDivElement | null>(null);
   const [tierInsertionBoundary, setTierInsertionBoundary] = useState<number | null>(null);
   const pointerRef = useRef<string | null>(null);
   const tierPressRef = useRef<{ id: string; pointerId: number } | null>(null);
@@ -288,6 +294,10 @@ export function App() {
         setTierInsertionBoundary((current) => current === visibleBoundary ? current : visibleBoundary);
       }
       if (!pointerRef.current) return;
+      const previewOffset = dragPreviewOffsetRef.current;
+      if (previewOffset && dragPreviewElementRef.current) {
+        dragPreviewElementRef.current.style.transform = `translate3d(${event.clientX - previewOffset.x}px, ${event.clientY - previewOffset.y}px, 0)`;
+      }
       const target = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-drop-zone]');
       if (target) {
         const targetId = target.dataset.dropZone!;
@@ -317,10 +327,18 @@ export function App() {
         } else dispatch({ type: 'drag-state', id: null });
       }
       pointerRef.current = null;
+      setDragPreview(null);
+      dragPreviewElementRef.current = null;
+      dragPreviewOffsetRef.current = null;
+      document.body.classList.remove('is-dragging-card');
     };
     const handlePointerCancel = (event: PointerEvent) => {
       clearTierPress(event);
       pointerRef.current = null;
+      setDragPreview(null);
+      dragPreviewElementRef.current = null;
+      dragPreviewOffsetRef.current = null;
+      document.body.classList.remove('is-dragging-card');
       dispatch({ type: 'drag-state', id: null });
     };
     window.addEventListener('pointermove', handlePointerMove);
@@ -330,11 +348,49 @@ export function App() {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('pointercancel', handlePointerCancel);
+      document.body.classList.remove('is-dragging-card');
+    };
+  }, []);
+
+  useEffect(() => {
+    const grid = poolGridRef.current;
+    if (!grid) return;
+    const mobile = window.matchMedia('(max-width: 640px)');
+    const updateDockVisibility = () => {
+      if (!mobile.matches) {
+        setPoolDockVisible(false);
+        return;
+      }
+      const bounds = grid.getBoundingClientRect();
+      setPoolDockVisible(bounds.top >= window.innerHeight);
+    };
+    updateDockVisibility();
+    window.addEventListener('scroll', updateDockVisibility, { passive: true });
+    window.addEventListener('resize', updateDockVisibility);
+    const observer = new ResizeObserver(updateDockVisibility);
+    observer.observe(grid);
+    return () => {
+      window.removeEventListener('scroll', updateDockVisibility);
+      window.removeEventListener('resize', updateDockVisibility);
+      observer.disconnect();
     };
   }, []);
 
   const handleCardDrop = (id: string, zone: string, index: number) => dispatch({ type: 'move-card', id, zone, index });
-  const beginCardDrag = (id: string) => { pointerRef.current = id; dispatch({ type: 'drag-state', id }); };
+  const beginCardDrag = (id: string, event: PointerEvent) => {
+    pointerRef.current = id;
+    const tile = event.target instanceof Element ? event.target.closest<HTMLElement>('.card-tile') : null;
+    const bounds = tile?.getBoundingClientRect();
+    const card = cardsById.get(id);
+    if (bounds && card) {
+      const offsetX = event.clientX - bounds.left;
+      const offsetY = event.clientY - bounds.top;
+      dragPreviewOffsetRef.current = { x: offsetX, y: offsetY };
+      setDragPreview({ card, width: bounds.width, height: bounds.height, offsetX, offsetY, x: bounds.left, y: bounds.top });
+      document.body.classList.add('is-dragging-card');
+    }
+    dispatch({ type: 'drag-state', id });
+  };
   const beginTierPointer = (id: string, event: PointerEvent, handle: HTMLButtonElement) => {
     tierPressRef.current = { id, pointerId: event.pointerId };
     tierInsertionRef.current = null;
@@ -395,8 +451,7 @@ export function App() {
           const image = loadedImages.get(id); if (!image) return;
           const x = padding + labelWidth + 12 + (index % columns) * (cardSize + gap);
           const imageY = y + Math.floor(index / columns) * (cardSize + gap);
-          context.save(); context.beginPath(); context.roundRect(x, imageY, cardSize, cardSize, 8); context.clip();
-          context.drawImage(image, x, imageY, cardSize, cardSize); context.restore();
+          context.drawImage(image, x, imageY, cardSize, cardSize);
         });
         y += tierHeight + rowGap;
       });
@@ -411,6 +466,16 @@ export function App() {
     else if (action === 'toggle-rarity') dispatch({ type: action, value: Number(value) });
     else dispatch({ type: action, value: String(value) });
   };
+
+  const renderPoolCards = () => <>
+    {visiblePool.map((id) => { const card = cardsById.get(id)!; return <Fragment key={id}>
+      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && !state.dropTarget.after && <CardInsertionSlot/>}
+      <CardTile card={card} language={state.language} index={state.pool.indexOf(id)} zone="pool" isDragging={state.dragging === id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
+      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && state.dropTarget.after && <CardInsertionSlot/>}
+    </Fragment>; })}
+    {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === null && <CardInsertionSlot/>}
+    {!visiblePool.length && state.dropTarget?.zone !== 'pool' && <div className="empty-state"><span className="empty-icon"><Icon name="search" size={21}/></span><span>{state.pool.length ? t.emptyPool : t.noCards}</span></div>}
+  </>;
 
   return <main className="app-shell">
     <header className="topbar">
@@ -452,16 +517,32 @@ export function App() {
         </div>
         <button type="button" className="date-direction" onClick={() => dispatch({ type: 'sort', mode: state.sortMode, direction: state.dateDirection === 'asc' ? 'desc' : 'asc' })} aria-label={state.dateDirection === 'asc' ? t.newest : t.oldest} title={state.dateDirection === 'asc' ? t.newest : t.oldest}><span className={state.dateDirection === 'desc' ? 'direction-up' : ''}>↓</span>{state.dateDirection === 'asc' ? t.oldest : t.newest}</button>
       </div>
-      <div className={`pool-grid drop-zone ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length}>
-        {visiblePool.map((id) => { const card = cardsById.get(id)!; return <Fragment key={id}>
-          {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && !state.dropTarget.after && <CardInsertionSlot/>}
-          <CardTile card={card} language={state.language} index={state.pool.indexOf(id)} zone="pool" isDragging={state.dragging === id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
-          {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && state.dropTarget.after && <CardInsertionSlot/>}
-        </Fragment>; })}
-        {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === null && <CardInsertionSlot/>}
-        {!visiblePool.length && state.dropTarget?.zone !== 'pool' && <div className="empty-state"><span className="empty-icon"><Icon name="search" size={21}/></span><span>{state.pool.length ? t.emptyPool : t.noCards}</span></div>}
+      <div ref={poolGridRef} className={`pool-grid drop-zone ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length} aria-hidden={poolDockVisible || undefined}>
+        {renderPoolCards()}
       </div>
     </section>
+
+    <aside className={`mobile-pool-dock ${poolDockVisible ? 'mobile-pool-dock--visible' : ''} ${poolDockExpanded ? 'mobile-pool-dock--expanded' : ''}`} aria-label={t.pool} aria-hidden={!poolDockVisible}>
+      <button className="mobile-pool-dock-toggle" type="button" aria-expanded={poolDockExpanded}
+        aria-label={poolDockExpanded ? (state.language === 'ru' ? 'Свернуть общую стопку' : 'Collapse memory pool') : (state.language === 'ru' ? 'Развернуть общую стопку' : 'Expand memory pool')}
+        onClick={() => setPoolDockExpanded((expanded) => !expanded)}>
+        <span className="mobile-pool-dock-count">{visiblePool.length}</span>
+        <svg className="mobile-pool-dock-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          {poolDockExpanded ? <path d="m6 9 6 6 6-6"/> : <path d="m6 15 6-6 6 6"/>}
+        </svg>
+      </button>
+      <div className="mobile-pool-dock-scroll" aria-label={t.pool}>
+        <div className={`pool-grid mobile-pool-dock-grid drop-zone ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length}>
+          {renderPoolCards()}
+        </div>
+      </div>
+    </aside>
+
+    {dragPreview && <article ref={(element) => { dragPreviewElementRef.current = element; }} className="card-tile card-drag-preview" aria-hidden="true"
+      style={{ width: dragPreview.width, height: dragPreview.height, transform: `translate3d(${dragPreview.x}px, ${dragPreview.y}px, 0)` }}>
+      <img className="card-image" src={cardImageUrl(dragPreview.card.image)} alt="" draggable={false} loading="eager" style={{ width: '100%', height: '100%' }}/>
+      <span className="card-rarity">{dragPreview.card.rarity}★</span>
+    </article>}
 
     {selected && <div className="modal-backdrop" role="presentation" onClick={(event) => {
       event.stopPropagation();

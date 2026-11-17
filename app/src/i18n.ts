@@ -4,7 +4,7 @@ export const copy = {
   ru: {
     title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG',
     addTier: 'Добавить уровень', pool: 'Карты', search: 'Поиск по названию',
-    sortDate: 'Дата → персонаж', sortCharacter: 'Персонаж → дата',
+    sortDate: 'По дате', sortCharacter: 'По персонажу',
     oldest: 'Сначала старые', newest: 'Сначала новые', filters: 'Фильтры',
     character: 'Персонаж', rarity: 'Редкость', type: 'Тип', all: 'Все',
     solar: 'Solar', lunar: 'Lunar', stars4: '4 звезды', stars5: '5 звёзд',
@@ -25,7 +25,7 @@ export const copy = {
   en: {
     title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG',
     addTier: 'Add tier', pool: 'Memories', search: 'Search memories',
-    sortDate: 'Date → character', sortCharacter: 'Character → date',
+    sortDate: 'By date', sortCharacter: 'By character',
     oldest: 'Oldest first', newest: 'Newest first', filters: 'Filters',
     character: 'Character', rarity: 'Rarity', type: 'Type', all: 'All',
     solar: 'Solar', lunar: 'Lunar', stars4: '4 stars', stars5: '5 stars',
