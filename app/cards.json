@@ -1,0 +1,83 @@
+[
+  {
+    "id": "card_c89f13",
+    "name": "Oneiric Protocol",
+    "character": "Caleb",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "caleb_oneiric_protocol.webp"
+  },
+  {
+    "id": "card_0b0cc2",
+    "name": "A Thought Across",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_a_thought_across.webp"
+  },
+  {
+    "id": "card_74c9c7",
+    "name": "Summer Surge",
+    "character": "Caleb",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-08-05",
+    "image": "caleb_summer_surge.webp"
+  },
+  {
+    "id": "card_3e60f8",
+    "name": "Yin Yang Sundering",
+    "character": "Caleb",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2026-03-28",
+    "image": "caleb_yin_yang_sundering.webp"
+  },
+  {
+    "id": "card_5fa3c0",
+    "name": "Lingering Light",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-10-11",
+    "image": "xavier_lingering_light.webp"
+  },
+  {
+    "id": "card_ee48df",
+    "name": "Shattered Simulacrum",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "zayne_shattered_simulacrum.webp"
+  },
+  {
+    "id": "card_4018d2",
+    "name": "Program Fallacy",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "xavier_program_fallacy.webp"
+  },
+  {
+    "id": "card_8724ba",
+    "name": "Paradox Vector",
+    "character": "Sylus",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "sylus_paradox_vector.webp"
+  },
+  {
+    "id": "card_8f2ff6",
+    "name": "Synced Drowning",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "rafayel_synced_drowning.webp"
+  }
+]
