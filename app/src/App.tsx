@@ -40,7 +40,8 @@ interface CardDropPosition {
 }
 
 function cardDropPosition(container: HTMLElement, clientX: number, clientY: number): CardDropPosition {
-  const items = [...container.querySelectorAll<HTMLElement>('[data-card-id]')];
+  const items = [...container.querySelectorAll<HTMLElement>('[data-card-id]')]
+    .filter((item) => item.getClientRects().length > 0);
   if (!items.length) {
     return { index: Number(container.dataset.dropCount ?? 0), anchorId: null, after: true };
   }
@@ -85,9 +86,9 @@ function cardDropPosition(container: HTMLElement, clientX: number, clientY: numb
   return { index: Number(last.dataset.cardIndex) + 1, anchorId: last.dataset.cardId ?? null, after: true };
 }
 
-function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggingId, t, language, onRename, onColor, onDelete, onTierPointerDown, onMove, onOpen, onDragStart }: {
+function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggingId, dragSourceRemoved, t, language, onRename, onColor, onDelete, onTierPointerDown, onMove, onOpen, onDragStart }: {
   tier: Tier; index: number; total: number; cardsById: Map<string, Card>; reorderId: string | null;
-  dropTarget: AppState['dropTarget']; draggingId: string | null;
+  dropTarget: AppState['dropTarget']; draggingId: string | null; dragSourceRemoved: boolean;
   t: Record<string, string>; language: Language; onRename: (id: string, name: string) => void;
   onColor: (id: string, color: string) => void; onDelete: (id: string) => void;
   onTierPointerDown: (id: string, event: PointerEvent, handle: HTMLButtonElement) => void;
@@ -112,7 +113,7 @@ function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggin
     <div className={`tier-content drop-zone ${dropTarget?.zone === tier.id ? 'is-drop-target' : ''}`} data-drop-zone={tier.id} data-drop-count={tierCards.length}>
       {tierCards.map((card, cardIndex) => <Fragment key={card.id}>
         {dropTarget?.zone === tier.id && dropTarget.anchorId === card.id && !dropTarget.after && <CardInsertionSlot tier/>}
-        <CardTile card={card} language={language} index={cardIndex} zone={tier.id} isDragging={draggingId === card.id} onOpen={onOpen} onDragStart={onDragStart}/>
+        <CardTile card={card} language={language} index={cardIndex} zone={tier.id} isDragging={draggingId === card.id} dragSourceRemoved={dragSourceRemoved && draggingId === card.id} onOpen={onOpen} onDragStart={onDragStart}/>
         {dropTarget?.zone === tier.id && dropTarget.anchorId === card.id && dropTarget.after && <CardInsertionSlot tier/>}
       </Fragment>)}
       {dropTarget?.zone === tier.id && dropTarget.anchorId === null && <CardInsertionSlot tier/>}
@@ -137,11 +138,11 @@ function CardInsertionSlot({ tier = false }: { tier?: boolean }) {
   return <span className={`card-insertion-slot ${tier ? 'card-insertion-slot--tier' : ''}`} aria-hidden="true"/>;
 }
 
-function CardTile({ card, language, index, zone, isDragging, onOpen, onDragStart }: {
-  card: Card; language: Language; index: number; zone: string; isDragging: boolean;
+function CardTile({ card, language, index, zone, isDragging, dragSourceRemoved, onOpen, onDragStart }: {
+  card: Card; language: Language; index: number; zone: string; isDragging: boolean; dragSourceRemoved: boolean;
   onOpen: (id: string) => void; onDragStart: (id: string, event: PointerEvent) => void;
 }) {
-  return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${isDragging ? 'card-tile--dragging' : ''}`} data-card-id={card.id} data-card-index={index} data-card-zone={zone}>
+  return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${isDragging ? 'card-tile--dragging' : ''} ${dragSourceRemoved ? 'card-tile--dragging-away' : ''}`} data-card-id={card.id} data-card-index={index} data-card-zone={zone}>
     <button className="card-image-button" type="button" onClick={() => onOpen(card.id)} aria-label={`${labelForCharacter(card, language)} — ${card.name}`}>
       <img className="card-image" src={cardImageUrl(card.image)} alt={`${labelForCharacter(card, language)} — ${card.name}`} loading="lazy" draggable={false}/>
       <span className="card-rarity" aria-label={`${card.rarity}★`}>{card.rarity}★</span>
@@ -160,6 +161,9 @@ export function App() {
   const [dragPreview, setDragPreview] = useState<{ card: Card; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
   const dragPreviewElementRef = useRef<HTMLElement | null>(null);
   const dragPreviewOffsetRef = useRef<{ x: number; y: number } | null>(null);
+  const dragOriginBoundsRef = useRef<DOMRect | null>(null);
+  const dragSourceRemovedRef = useRef(false);
+  const [dragSourceRemoved, setDragSourceRemoved] = useState(false);
   const poolGridRef = useRef<HTMLDivElement | null>(null);
   const [tierInsertionBoundary, setTierInsertionBoundary] = useState<number | null>(null);
   const pointerRef = useRef<string | null>(null);
@@ -294,6 +298,11 @@ export function App() {
         setTierInsertionBoundary((current) => current === visibleBoundary ? current : visibleBoundary);
       }
       if (!pointerRef.current) return;
+      const origin = dragOriginBoundsRef.current;
+      if (origin && !dragSourceRemovedRef.current && (event.clientX < origin.left || event.clientX > origin.right || event.clientY < origin.top || event.clientY > origin.bottom)) {
+        dragSourceRemovedRef.current = true;
+        setDragSourceRemoved(true);
+      }
       const previewOffset = dragPreviewOffsetRef.current;
       if (previewOffset && dragPreviewElementRef.current) {
         dragPreviewElementRef.current.style.transform = `translate3d(${event.clientX - previewOffset.x}px, ${event.clientY - previewOffset.y}px, 0)`;
@@ -309,7 +318,7 @@ export function App() {
         const finalIndex = sourceZone === targetId && sourceIndex >= 0 && sourceIndex < position.index
           ? position.index - 1
           : position.index;
-        if (sourceZone === targetId && sourceIndex === finalIndex) {
+        if (sourceZone === targetId && sourceIndex === finalIndex && !dragSourceRemovedRef.current) {
           dispatch({ type: 'drag-state', id: pointerRef.current });
         } else {
           dispatch({ type: 'drag-state', id: pointerRef.current, zone: targetId, ...position });
@@ -330,6 +339,9 @@ export function App() {
       setDragPreview(null);
       dragPreviewElementRef.current = null;
       dragPreviewOffsetRef.current = null;
+      dragOriginBoundsRef.current = null;
+      dragSourceRemovedRef.current = false;
+      setDragSourceRemoved(false);
       document.body.classList.remove('is-dragging-card');
     };
     const handlePointerCancel = (event: PointerEvent) => {
@@ -338,6 +350,9 @@ export function App() {
       setDragPreview(null);
       dragPreviewElementRef.current = null;
       dragPreviewOffsetRef.current = null;
+      dragOriginBoundsRef.current = null;
+      dragSourceRemovedRef.current = false;
+      setDragSourceRemoved(false);
       document.body.classList.remove('is-dragging-card');
       dispatch({ type: 'drag-state', id: null });
     };
@@ -382,6 +397,9 @@ export function App() {
     const tile = event.target instanceof Element ? event.target.closest<HTMLElement>('.card-tile') : null;
     const bounds = tile?.getBoundingClientRect();
     const card = cardsById.get(id);
+    dragOriginBoundsRef.current = bounds ?? null;
+    dragSourceRemovedRef.current = false;
+    setDragSourceRemoved(false);
     if (bounds && card) {
       const offsetX = event.clientX - bounds.left;
       const offsetY = event.clientY - bounds.top;
@@ -401,7 +419,7 @@ export function App() {
 
   const renderTierCard = (tier: Tier, index: number, total: number) => (
     <TierRow key={tier.id} tier={tier} index={index} total={total} cardsById={cardsById} reorderId={state.tierReorderId}
-      dropTarget={state.dropTarget} draggingId={state.dragging} t={t} language={state.language}
+      dropTarget={state.dropTarget} draggingId={state.dragging} dragSourceRemoved={dragSourceRemoved} t={t} language={state.language}
       onRename={(id, name) => dispatch({ type: 'rename-tier', id, name })}
       onColor={(id, color) => dispatch({ type: 'color-tier', id, color })}
       onDelete={(id) => setConfirmation({ type: 'delete-tier', id })}
@@ -470,7 +488,7 @@ export function App() {
   const renderPoolCards = () => <>
     {visiblePool.map((id) => { const card = cardsById.get(id)!; return <Fragment key={id}>
       {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && !state.dropTarget.after && <CardInsertionSlot/>}
-      <CardTile card={card} language={state.language} index={state.pool.indexOf(id)} zone="pool" isDragging={state.dragging === id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
+      <CardTile card={card} language={state.language} index={state.pool.indexOf(id)} zone="pool" isDragging={state.dragging === id} dragSourceRemoved={dragSourceRemoved && state.dragging === id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
       {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && state.dropTarget.after && <CardInsertionSlot/>}
     </Fragment>; })}
     {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === null && <CardInsertionSlot/>}
