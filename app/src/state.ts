@@ -31,7 +31,7 @@ export interface AppState {
   languagePreference: 'system' | 'ru' | 'en';
   selectedCard: string | null;
   dragging: string | null;
-  dropTarget: { zone: string; index: number } | null;
+  dropTarget: { zone: string; index: number; anchorId: string | null; after: boolean } | null;
   tierReorderId: string | null;
   notice: string | null;
 }
@@ -77,10 +77,12 @@ export type Action =
   | { type: 'color-tier'; id: string; color: string }
   | { type: 'add-tier' }
   | { type: 'delete-tier'; id: string }
+  | { type: 'return-all-cards' }
+  | { type: 'reset-ranking' }
   | { type: 'start-tier-reorder'; id: string | null }
   | { type: 'move-tier'; from: number; to: number }
   | { type: 'move-card'; id: string; zone: string; index: number; source?: string }
-  | { type: 'drag-state'; id: string | null; zone?: string; index?: number }
+  | { type: 'drag-state'; id: string | null; zone?: string; index?: number; anchorId?: string | null; after?: boolean }
   | { type: 'notice'; value: string | null };
 
 export function reducer(state: AppState, action: Action, catalog: Card[]): AppState {
@@ -130,6 +132,20 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
         : sortCards([...state.pool, ...removed.cards], catalog, state.sortMode, state.dateDirection);
       return { ...state, pool, tiers: state.tiers.filter((tier) => tier.id !== action.id) };
     }
+    case 'return-all-cards': return {
+      ...state,
+      tiers: state.tiers.map((tier) => ({ ...tier, cards: [] })),
+      pool: sortCards(catalog.map((card) => card.id), catalog, state.sortMode, state.dateDirection),
+      poolManuallyOrdered: false,
+      selectedCard: null, dragging: null, dropTarget: null, tierReorderId: null,
+    };
+    case 'reset-ranking': return {
+      ...state,
+      tiers: initialTiers.map((tier) => ({ ...tier, cards: [] })),
+      pool: sortCards(catalog.map((card) => card.id), catalog, state.sortMode, state.dateDirection),
+      poolManuallyOrdered: false,
+      selectedCard: null, dragging: null, dropTarget: null, tierReorderId: null,
+    };
     case 'start-tier-reorder': return { ...state, tierReorderId: action.id };
     case 'move-tier': {
       if (action.from === action.to || action.to < 0 || action.to >= state.tiers.length) return state;
@@ -143,6 +159,9 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
       if (!source || source === action.zone) {
         if (!source) return state;
       }
+      const sourceIndex = source === 'pool'
+        ? state.pool.indexOf(action.id)
+        : state.tiers.find((tier) => tier.id === source)?.cards.indexOf(action.id) ?? -1;
       const pool = state.pool.filter((id) => id !== action.id);
       const tiers = state.tiers.map((tier) => ({ ...tier, cards: tier.cards.filter((id) => id !== action.id) }));
       if (action.zone === 'pool' && source !== 'pool' && !state.poolManuallyOrdered) {
@@ -155,7 +174,8 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
         ? pool
         : tiers.find((tier) => tier.id === action.zone)?.cards;
       if (!destination) return state;
-      const index = Math.max(0, Math.min(action.index, destination.length));
+      const adjustedIndex = source === action.zone && sourceIndex >= 0 && sourceIndex < action.index ? action.index - 1 : action.index;
+      const index = Math.max(0, Math.min(adjustedIndex, destination.length));
       destination.splice(index, 0, action.id);
       return {
         ...state, pool, tiers,
@@ -166,7 +186,12 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
     case 'drag-state': return {
       ...state,
       dragging: action.id,
-      dropTarget: action.zone ? { zone: action.zone, index: action.index ?? 0 } : null,
+      dropTarget: action.zone ? {
+        zone: action.zone,
+        index: action.index ?? 0,
+        anchorId: action.anchorId ?? null,
+        after: action.after ?? true,
+      } : null,
     };
     case 'notice': return { ...state, notice: action.value };
   }
