@@ -57,6 +57,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .language-toggle { font-size: 11px; font-weight: 700; letter-spacing: .05em; }
 .ranking-section { padding-top: 34px; }
 .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-primary-actions { display: flex; align-items: center; gap: 7px; }
+.share-button { width: 38px; height: 38px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.share-button:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); color: var(--accent); }
 .section-kicker { color: var(--muted); font-size: 10px; line-height: 1.3; font-weight: 700; letter-spacing: .16em; }
 .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(30,40,36,.035); transition: .18s ease; }
 .primary-button:hover:not(:disabled) { border-color: rgba(78,116,109,.35); background: var(--surface-solid); transform: translateY(-1px); }
@@ -91,7 +94,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .card-image-button { display: block; width: 80px; height: 80px; padding: 0; overflow: hidden; border: 0; background: transparent; cursor: pointer; }
 .card-image { display: block; width: 80px; height: 80px; object-fit: cover; transition: transform .22s ease, filter .22s ease; }
 .card-image-button:hover .card-image { transform: scale(1.045); filter: saturate(1.04); }
-.card-rarity { position: absolute; bottom: 4px; left: 4px; padding: 2px 4px; border: 1px solid rgba(255,255,255,.35); border-radius: 5px; background: rgba(20,22,24,.62); color: white; font-size: 9px; line-height: 1; font-weight: 700; pointer-events: none; }
 .card-drag-handle { position: absolute; top: 3px; right: 3px; display: grid; place-items: center; width: 25px; height: 27px; padding: 0; border: 1px solid rgba(255,255,255,.38); border-radius: 7px; background: rgba(22,24,27,.48); color: white; opacity: 0; cursor: grab; touch-action: none; transition: opacity .15s ease; }
 .card-tile:hover .card-drag-handle, .card-drag-handle:focus-visible { opacity: 1; }
 .card-drag-handle:active { cursor: grabbing; }
@@ -130,6 +132,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .segmented-control { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); }
 .segmented-control button { min-height: 28px; padding: 0 10px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
 .segmented-control button.is-selected { background: var(--surface-solid); color: var(--text); box-shadow: 0 1px 3px rgba(20,30,27,.08); }
+.segmented-control button:disabled { color: var(--muted); opacity: .48; cursor: not-allowed; }
 .date-direction { display: inline-flex; align-items: center; gap: 6px; padding: 6px 8px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
 .date-direction:hover { color: var(--text); background: var(--surface-soft); }
 .date-direction span { color: var(--accent); font-size: 15px; line-height: .8; transition: transform .15s ease; }
@@ -155,7 +158,10 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .destination-button > svg { margin-left: auto; color: var(--accent); }
 .destination-color { width: 12px; height: 12px; flex: 0 0 auto; border-radius: 4px; }
 .return-button { justify-content: center; margin-top: 5px; border-color: transparent; background: var(--surface-soft); color: var(--accent); }
-.toast { position: fixed; z-index: 50; right: 22px; bottom: 22px; max-width: min(420px, calc(100vw - 44px)); padding: 13px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); color: var(--text); font-size: 12px; box-shadow: var(--shadow); }
+.toast { position: fixed; z-index: 50; top: 16px; right: 18px; display: flex; align-items: flex-start; gap: 12px; max-width: min(420px, calc(100vw - 36px)); padding: 11px 12px 11px 15px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); color: var(--text); font-size: 12px; line-height: 1.45; box-shadow: var(--shadow); animation: fade-in .16s ease; }
+.toast > span { padding-top: 2px; }
+.toast > button { display: grid; width: 25px; height: 25px; flex: 0 0 auto; place-items: center; margin: -3px -4px 0 0; border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer; }
+.toast > button:hover { background: var(--surface-soft); color: var(--text); }
 .confirm-backdrop { position: fixed; z-index: 40; inset: 0; display: grid; place-items: center; padding: 18px; background: rgba(12,14,16,.42); backdrop-filter: blur(7px); animation: fade-in .16s ease; }
 .confirm-dialog { width: min(360px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-glass); box-shadow: var(--shadow); backdrop-filter: blur(24px); animation: modal-in .2s ease; }
 .confirm-dialog h2 { margin: 2px 30px 0 0; color: var(--text); font-size: 16px; line-height: 1.4; font-weight: 650; overflow-wrap: anywhere; }
@@ -164,6 +170,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .confirm-actions button { min-height: 38px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 .confirm-keep { background: var(--surface); color: var(--text); }
 .confirm-keep:hover { background: var(--surface-soft); }
+.confirm-share { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)) !important; background: var(--accent-soft); color: var(--text); }
+.confirm-share:hover { border-color: var(--accent) !important; }
+.share-link-input { width: 100%; min-height: 39px; margin-top: 15px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); font-size: 12px; }
 .confirm-delete { border-color: #b84b4b !important; background: #b84b4b; color: #fff; }
 .confirm-delete:hover { background: #a63d3d; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -185,6 +194,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   .ranking-section { padding-top: 20px; }
   .section-kicker { font-size: 9px; }
   .export-button { min-height: 35px; padding: 0 10px; font-size: 10px; }
+  .share-button { width: 35px; height: 35px; }
   .section-head { gap: 6px; }
   .section-management-actions { gap: 4px; }
   .tier-reset-button { min-height: 35px; padding-inline: 7px; border-radius: 9px; font-size: 10px; }
@@ -240,7 +250,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   .modal-destinations > .filter-label { grid-column: 1 / -1; }
   .destination-button, .return-button { min-height: 39px; padding-inline: 8px; font-size: 10px; }
   .return-button { grid-column: 1 / -1; }
-  .toast { right: 12px; bottom: 12px; }
+  .toast { top: calc(10px + env(safe-area-inset-top, 0px)); right: 10px; max-width: calc(100vw - 20px); }
+  .share-conflict-dialog .confirm-actions { align-items: stretch; flex-direction: column-reverse; }
+  .share-conflict-dialog .confirm-actions button { min-height: 42px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }

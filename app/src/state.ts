@@ -3,7 +3,7 @@ import type { Card, SortMode, Tier } from './types';
 export const characterOrder = ['Xavier', 'Zayne', 'Rafayel', 'Sylus', 'Caleb'];
 export const tierPalette = [
   '#f3a2a8', '#f3c38f', '#f4dc8b', '#a8cba9', '#a7c7e7', '#c8b3de',
-  '#d7d7d2', '#b9bec5', '#45484d', '#80b8b1',
+  '#e9a7c5', '#c5d7a4', '#d7d7d2', '#b9bec5', '#45484d', '#80b8b1',
 ];
 
 export const initialTiers: Tier[] = [
@@ -43,7 +43,7 @@ export function sortCards(ids: string[], catalog: Card[], mode: SortMode, direct
     const right = byId.get(rightId)!;
     const date = (left.releaseDate.localeCompare(right.releaseDate)) * (direction === 'asc' ? 1 : -1);
     const character = characterOrder.indexOf(left.character) - characterOrder.indexOf(right.character);
-    const rarity = left.rarity - right.rarity;
+    const rarity = right.rarity - left.rarity;
     const type = (left.type === 'solar' ? 0 : 1) - (right.type === 'solar' ? 0 : 1);
     const name = left.name.localeCompare(right.name, undefined, { sensitivity: 'base' });
     return mode === 'date-character' ? (date || character || rarity || type || name) : (character || date || rarity || type || name);
@@ -79,6 +79,7 @@ export type Action =
   | { type: 'delete-tier'; id: string }
   | { type: 'return-all-cards' }
   | { type: 'reset-ranking' }
+  | { type: 'load-shared-ranking'; tiers: Tier[] }
   | { type: 'start-tier-reorder'; id: string | null }
   | { type: 'move-tier'; from: number; to: number }
   | { type: 'move-card'; id: string; zone: string; index: number; source?: string }
@@ -89,7 +90,17 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
   switch (action.type) {
     case 'toggle-character': {
       const active = state.characters.includes(action.value);
-      return { ...state, characters: active ? state.characters.filter((value) => value !== action.value) : [...state.characters, action.value] };
+      const characters = active ? state.characters.filter((value) => value !== action.value) : [...state.characters, action.value];
+      if (characters.length === 1 && state.sortMode === 'character-date') {
+        return {
+          ...state,
+          characters,
+          sortMode: 'date-character',
+          pool: sortCards(state.pool, catalog, 'date-character', state.dateDirection),
+          poolManuallyOrdered: false,
+        };
+      }
+      return { ...state, characters };
     }
     case 'toggle-rarity': {
       const active = state.rarities.includes(action.value);
@@ -146,6 +157,17 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
       poolManuallyOrdered: false,
       selectedCard: null, dragging: null, dropTarget: null, tierReorderId: null,
     };
+    case 'load-shared-ranking': {
+      const tiers = action.tiers.map((tier) => ({ ...tier, cards: [...tier.cards] }));
+      const assigned = new Set(tiers.flatMap((tier) => tier.cards));
+      return {
+        ...state,
+        tiers,
+        pool: sortCards(catalog.map((card) => card.id).filter((id) => !assigned.has(id)), catalog, state.sortMode, state.dateDirection),
+        poolManuallyOrdered: false,
+        selectedCard: null, dragging: null, dropTarget: null, tierReorderId: null,
+      };
+    }
     case 'start-tier-reorder': return { ...state, tierReorderId: action.id };
     case 'move-tier': {
       if (action.from === action.to || action.to < 0 || action.to >= state.tiers.length) return state;

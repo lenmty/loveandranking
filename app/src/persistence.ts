@@ -46,16 +46,16 @@ export function loadAppState(catalog: Card[]): AppState {
     const pool = poolFromStorage.filter((id) => !claimed.has(id));
     const inPool = new Set(pool);
     const missing = catalog.map((card) => card.id).filter((id) => !claimed.has(id) && !inPool.has(id));
-    const poolManuallyOrdered = saved.poolManuallyOrdered === true;
-    const completePool = poolManuallyOrdered
-      ? [...pool, ...missing]
-      : sortCards([...pool, ...missing], catalog, mode, direction);
-
     const characters = Array.isArray(saved.characters)
       ? saved.characters.filter((value): value is string => typeof value === 'string' && validCharacters.has(value))
       : initial.characters;
+    const normalizedSortMode = characters.length === 1 ? 'date-character' : mode;
+    const poolManuallyOrdered = saved.poolManuallyOrdered === true && normalizedSortMode === mode;
+    const completePool = poolManuallyOrdered
+      ? [...pool, ...missing]
+      : sortCards([...pool, ...missing], catalog, normalizedSortMode, direction);
     const rarities = Array.isArray(saved.rarities)
-      ? saved.rarities.filter((value): value is number => value === 4 || value === 5)
+      ? saved.rarities.filter((value): value is number => value === 3 || value === 4 || value === 5)
       : initial.rarities;
     const types = Array.isArray(saved.types)
       ? saved.types.filter((value): value is string => typeof value === 'string' && validCardTypes.has(value))
@@ -70,7 +70,7 @@ export function loadAppState(catalog: Card[]): AppState {
       tiers,
       pool: completePool,
       poolManuallyOrdered,
-      sortMode: mode,
+      sortMode: normalizedSortMode,
       dateDirection: direction,
       characters,
       rarities,

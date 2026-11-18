@@ -4,8 +4,10 @@ import { cards, cardImageUrl } from './catalog';
 import { characterNames, copy } from './i18n';
 import { reducer, sortCards, tierPalette } from './state';
 import { loadAppState, persistAppState } from './persistence';
+import { decodeSharedRanking, encodeSharedRanking, getShareFragment, hasCustomizedRanking, sameRanking } from './sharing';
 import type { AppState } from './state';
 import type { Card, Language, Tier } from './types';
+import type { SharedRanking } from './sharing';
 
 const characters = ['Xavier', 'Zayne', 'Rafayel', 'Sylus', 'Caleb'] as const;
 type Confirmation = { type: 'delete-tier'; id: string } | { type: 'return-all' } | { type: 'full-reset' };
@@ -44,6 +46,7 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true as const };
   const shapes: Record<string, ReactNode> = {
     download: <><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></>,
+    share: <><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 7.1 6.6 4.4"/></>,
     plus: <><path d="M12 5v14M5 12h14"/></>,
     search: <><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4 4"/></>,
     sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></>,
@@ -61,6 +64,15 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
 
 function labelForCharacter(card: Card, language: Language) {
   return characterNames[card.character][language];
+}
+
+function clearSharedRankFragment() {
+  if (getShareFragment(window.location.hash) === null) return;
+  window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}`);
+}
+
+function sharedRankingNotice(shared: SharedRanking, t: Record<string, string>): string | null {
+  return shared.skippedMemories ? t.shareSkipped.replace('{count}', String(shared.skippedMemories)) : null;
 }
 
 interface CardDropPosition {
@@ -175,7 +187,6 @@ function CardTile({ card, language, index, zone, isDragging, dragSourceRemoved, 
   return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${isDragging ? 'card-tile--dragging' : ''} ${dragSourceRemoved ? 'card-tile--dragging-away' : ''}`} data-card-id={card.id} data-card-index={index} data-card-zone={zone}>
     <button className="card-image-button" type="button" onClick={() => onOpen(card.id)} aria-label={`${labelForCharacter(card, language)} — ${card.name}`}>
       <img className="card-image" src={cardImageUrl(card.image)} alt={`${labelForCharacter(card, language)} — ${card.name}`} loading="lazy" draggable={false}/>
-      <span className="card-rarity" aria-label={`${card.rarity}★`}>{card.rarity}★</span>
     </button>
     <button className="card-drag-handle" type="button" aria-label={language === 'ru' ? 'Перетащить карточку' : 'Drag memory'} title={language === 'ru' ? 'Перетащить' : 'Drag'}
       onPointerDown={(event) => { event.preventDefault(); onDragStart(card.id, event.nativeEvent); }}><Icon name="grip" size={14}/></button>
@@ -186,6 +197,8 @@ export function App() {
   const [state, dispatchBase] = useReducer((current: AppState, action: Parameters<typeof reducer>[1]) => reducer(current, action, cards), undefined, () => loadAppState(cards));
   const [exporting, setExporting] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const [incomingRanking, setIncomingRanking] = useState<SharedRanking | null>(null);
+  const [shareLink, setShareLink] = useState<string | null>(null);
   const [poolDockVisible, setPoolDockVisible] = useState(false);
   const [poolDockExpanded, setPoolDockExpanded] = useState(false);
   const [dragPreview, setDragPreview] = useState<{ card: Card; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
@@ -201,6 +214,9 @@ export function App() {
   const tierInsertionRef = useRef<number | null>(null);
   const tiersRef = useRef(state.tiers);
   tiersRef.current = state.tiers;
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const shareLinkInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = dispatchBase;
   const t = copy[state.language];
   const cardsById = useMemo(() => new Map(cards.map((card) => [card.id, card])), []);
@@ -227,13 +243,65 @@ export function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.theme === 'dark' ? '#17191d' : '#f5f5f2');
   }, [state.theme, state.language]);
   useEffect(() => {
+    let active = true;
+    const loadFromCurrentHash = () => {
+      const hash = window.location.hash;
+      if (getShareFragment(hash) === null) {
+        setIncomingRanking(null);
+        return;
+      }
+      void decodeSharedRanking(hash, cards).then((shared) => {
+        if (!active || window.location.hash !== hash) return;
+        const current = stateRef.current;
+        if (!hasCustomizedRanking(current.tiers) || sameRanking(current.tiers, shared.tiers)) {
+          if (!sameRanking(current.tiers, shared.tiers)) dispatch({ type: 'load-shared-ranking', tiers: shared.tiers });
+          const notice = sharedRankingNotice(shared, copy[current.language]);
+          if (notice) dispatch({ type: 'notice', value: notice });
+          clearSharedRankFragment();
+        } else setIncomingRanking(shared);
+      }).catch(() => {
+        if (!active || window.location.hash !== hash) return;
+        clearSharedRankFragment();
+        dispatch({ type: 'notice', value: copy[stateRef.current.language].shareInvalid });
+      });
+    };
+    loadFromCurrentHash();
+    window.addEventListener('hashchange', loadFromCurrentHash);
+    return () => {
+      active = false;
+      window.removeEventListener('hashchange', loadFromCurrentHash);
+    };
+  }, []);
+  useEffect(() => {
     persistAppState(state);
   }, [state.tiers, state.pool, state.poolManuallyOrdered, state.sortMode, state.dateDirection, state.characters, state.rarities, state.types, state.search, state.themePreference, state.languagePreference]);
   useEffect(() => {
     if (!state.notice) return;
-    const timer = window.setTimeout(() => dispatch({ type: 'notice', value: null }), 3800);
+    const timer = window.setTimeout(() => dispatch({ type: 'notice', value: null }), 5000);
     return () => window.clearTimeout(timer);
   }, [state.notice]);
+  useEffect(() => {
+    if (!incomingRanking) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    document.querySelector<HTMLElement>('.share-dialog-secondary')?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIncomingRanking(null);
+        clearSharedRankFragment();
+      }
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      previousFocus?.focus();
+    };
+  }, [incomingRanking]);
+  useEffect(() => {
+    if (!shareLink) return;
+    const input = shareLinkInputRef.current;
+    input?.focus();
+    input?.select();
+  }, [shareLink]);
   useEffect(() => {
     if (!selected) return;
     const previousFocus = document.activeElement as HTMLElement | null;
@@ -568,6 +636,58 @@ export function App() {
     } finally { setExporting(false); }
   };
 
+  const shareRanking = async () => {
+    let url: string;
+    try {
+      const hash = await encodeSharedRanking(state.tiers);
+      const target = new URL(window.location.href);
+      target.hash = hash;
+      url = target.href;
+    } catch (error) {
+      dispatch({ type: 'notice', value: error instanceof Error && error.message === 'Share link is too long' ? t.shareTooLong : t.shareCreateError });
+      return;
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'CardRank', url });
+        return;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      dispatch({ type: 'notice', value: t.shareCopied });
+    } catch {
+      setShareLink(url);
+    }
+  };
+
+  const acceptIncomingRanking = () => {
+    if (!incomingRanking) return;
+    dispatch({ type: 'load-shared-ranking', tiers: incomingRanking.tiers });
+    const notice = sharedRankingNotice(incomingRanking, t);
+    setIncomingRanking(null);
+    clearSharedRankFragment();
+    if (notice) dispatch({ type: 'notice', value: notice });
+  };
+
+  const keepCurrentRanking = () => {
+    setIncomingRanking(null);
+    clearSharedRankFragment();
+  };
+
+  const copyFallbackShareLink = async () => {
+    if (!shareLink) return;
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      setShareLink(null);
+      dispatch({ type: 'notice', value: t.shareCopied });
+    } catch {
+      shareLinkInputRef.current?.select();
+    }
+  };
+
   const toggleFilter = (action: 'toggle-character' | 'toggle-rarity' | 'toggle-card-type', value: string | number) => {
     if (action === 'toggle-character') dispatch({ type: action, value: String(value) });
     else if (action === 'toggle-rarity') dispatch({ type: action, value: Number(value) });
@@ -586,7 +706,7 @@ export function App() {
 
   return <main className="app-shell">
     <header className="topbar">
-      <a className="brand" href="#top" aria-label="CardRank"><span><strong>{t.title}</strong><small>{t.subtitle}</small></span></a>
+      <a className="brand" href={`${window.location.pathname}${window.location.search}`} aria-label="CardRank"><span><strong>{t.title}</strong><small>{t.subtitle}</small></span></a>
       <div className="top-actions">
         <button className="icon-button language-toggle" type="button" aria-label={t.language} title={t.language} onClick={() => dispatch({ type: 'toggle-language' })}>{state.language === 'ru' ? 'EN' : 'RU'}</button>
         <button className="icon-button" type="button" aria-label={state.theme === 'light' ? t.themeDark : t.themeLight} title={state.theme === 'light' ? t.themeDark : t.themeLight} onClick={() => dispatch({ type: 'toggle-theme' })}><Icon name={state.theme === 'light' ? 'moon' : 'sun'}/></button>
@@ -595,7 +715,10 @@ export function App() {
 
     <section className="ranking-section" aria-label={state.language === 'ru' ? 'Рейтинговые уровни' : 'Ranking tiers'}>
       <div className="section-head">
-        <button className="primary-button export-button" type="button" onClick={exportPng} disabled={exporting}><Icon name="download" size={16}/><span>{exporting ? '…' : t.export}</span></button>
+        <div className="section-primary-actions">
+          <button className="primary-button export-button" type="button" onClick={exportPng} disabled={exporting}><Icon name="download" size={16}/><span>{exporting ? '…' : t.export}</span></button>
+          <button className="icon-button share-button" type="button" onClick={shareRanking} aria-label={t.share} title={t.share}><Icon name="share" size={17}/></button>
+        </div>
         <div className="section-management-actions">
           <button className="tier-reset-button" type="button" onClick={() => setConfirmation({ type: 'return-all' })}>{t.returnAllButton}</button>
           <button className="tier-reset-button" type="button" onClick={() => setConfirmation({ type: 'full-reset' })}>{t.fullResetButton}</button>
@@ -614,13 +737,13 @@ export function App() {
       <div className="pool-heading"><h1>{t.pool}<span className="pool-count">{visiblePool.length}<small> / {state.pool.length}</small></span></h1></div>
       <div className="filter-toolbar"><div className="filter-panel">
         <div className="filter-group"><span className="filter-label">{t.character}</span>{characters.map((character) => <label className="filter-chip" key={character}><input type="checkbox" checked={state.characters.includes(character)} onChange={() => toggleFilter('toggle-character', character)}/><span>{characterNames[character][state.language]}</span></label>)}</div>
-        <div className="filter-group"><span className="filter-label">{t.rarity}</span>{[4, 5].map((rarity) => <label className="filter-chip" key={rarity}><input type="checkbox" checked={state.rarities.includes(rarity)} onChange={() => toggleFilter('toggle-rarity', rarity)}/><span>{rarity === 4 ? t.stars4 : t.stars5}</span></label>)}</div>
+        <div className="filter-group"><span className="filter-label">{t.rarity}</span>{[5, 4, 3].map((rarity) => <label className="filter-chip" key={rarity}><input type="checkbox" checked={state.rarities.includes(rarity)} onChange={() => toggleFilter('toggle-rarity', rarity)}/><span>{rarity === 5 ? t.stars5 : rarity === 4 ? t.stars4 : t.stars3}</span></label>)}</div>
         <div className="filter-group"><span className="filter-label">{t.type}</span>{(['solar', 'lunar'] as const).map((type) => <label className="filter-chip" key={type}><input type="checkbox" checked={state.types.includes(type)} onChange={() => toggleFilter('toggle-card-type', type)}/><span>{t[type]}</span></label>)}</div>
       </div><div className="pool-tools"><label className="search-field"><Icon name="search" size={16}/><input value={state.search} onChange={(event) => dispatch({ type: 'search', value: event.target.value })} placeholder={t.search} aria-label={t.search}/>{state.search && <button type="button" aria-label={t.close} onClick={() => dispatch({ type: 'search', value: '' })}><Icon name="close" size={14}/></button>}</label></div></div>
       <div className="sort-controls">
         <div className="segmented-control" role="group" aria-label={state.language === 'ru' ? 'Сортировка' : 'Sorting'}>
           <button type="button" className={state.sortMode === 'date-character' ? 'is-selected' : ''} onClick={() => dispatch({ type: 'sort', mode: 'date-character', direction: state.dateDirection })}>{t.sortDate}</button>
-          <button type="button" className={state.sortMode === 'character-date' ? 'is-selected' : ''} onClick={() => dispatch({ type: 'sort', mode: 'character-date', direction: state.dateDirection })}>{t.sortCharacter}</button>
+          <button type="button" className={state.sortMode === 'character-date' ? 'is-selected' : ''} disabled={state.characters.length === 1} onClick={() => dispatch({ type: 'sort', mode: 'character-date', direction: state.dateDirection })}>{t.sortCharacter}</button>
         </div>
         <button type="button" className="date-direction" onClick={() => dispatch({ type: 'sort', mode: state.sortMode, direction: state.dateDirection === 'asc' ? 'desc' : 'asc' })} aria-label={state.dateDirection === 'asc' ? t.newest : t.oldest} title={state.dateDirection === 'asc' ? t.newest : t.oldest}><span className={state.dateDirection === 'desc' ? 'direction-up' : ''}>↓</span>{state.dateDirection === 'asc' ? t.oldest : t.newest}</button>
       </div>
@@ -648,7 +771,6 @@ export function App() {
     {dragPreview && <article ref={(element) => { dragPreviewElementRef.current = element; }} className="card-tile card-drag-preview" aria-hidden="true"
       style={{ width: dragPreview.width, height: dragPreview.height, transform: `translate3d(${dragPreview.x}px, ${dragPreview.y}px, 0)` }}>
       <img className="card-image" src={cardImageUrl(dragPreview.card.image)} alt="" draggable={false} loading="eager" style={{ width: '100%', height: '100%' }}/>
-      <span className="card-rarity">{dragPreview.card.rarity}★</span>
     </article>}
 
     {selected && <div className="modal-backdrop" role="presentation" onClick={(event) => {
@@ -698,6 +820,37 @@ export function App() {
         </div>
       </section>
     </div>}
-    {state.notice && <div className="toast" role="status">{state.notice}</div>}
+    {incomingRanking && <div className="confirm-backdrop" role="presentation" onClick={(event) => {
+      if (event.target === event.currentTarget) keepCurrentRanking();
+    }}>
+      <section className="confirm-dialog share-conflict-dialog" role="alertdialog" aria-modal="true" aria-labelledby="share-conflict-title" aria-describedby="share-conflict-message" onKeyDown={(event) => {
+        if (event.key !== 'Tab') return;
+        const focusable = [...event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled)')];
+        if (!focusable.length) return;
+        const first = focusable[0]; const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }}>
+        <h2 id="share-conflict-title">{t.shareConflictTitle}</h2>
+        <p id="share-conflict-message">{t.shareConflictMessage}</p>
+        <div className="confirm-actions">
+          <button className="confirm-keep confirm-secondary share-dialog-secondary" type="button" onClick={keepCurrentRanking}>{t.shareOpenMine}</button>
+          <button className="confirm-share" type="button" onClick={acceptIncomingRanking}>{t.shareOpenLinked}</button>
+        </div>
+      </section>
+    </div>}
+    {shareLink && <div className="confirm-backdrop" role="presentation" onClick={(event) => {
+      if (event.target === event.currentTarget) setShareLink(null);
+    }}>
+      <section className="confirm-dialog share-link-dialog" role="dialog" aria-modal="true" aria-labelledby="share-link-title">
+        <h2 id="share-link-title">{t.shareLink}</h2>
+        <input ref={shareLinkInputRef} className="share-link-input" type="url" readOnly value={shareLink} onFocus={(event) => event.currentTarget.select()} />
+        <div className="confirm-actions">
+          <button className="confirm-keep" type="button" onClick={() => setShareLink(null)}>{t.close}</button>
+          <button className="confirm-share" type="button" onClick={copyFallbackShareLink}>{t.copyLink}</button>
+        </div>
+      </section>
+    </div>}
+    {state.notice && <div className="toast" role="status"><span>{state.notice}</span><button type="button" aria-label={t.close} onClick={() => dispatch({ type: 'notice', value: null })}><Icon name="close" size={15}/></button></div>}
   </main>;
 }

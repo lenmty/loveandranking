@@ -5,7 +5,7 @@ export interface Card {
   id: string;
   name: string;
   character: Character;
-  rarity: 4 | 5;
+  rarity: 3 | 4 | 5;
   type: CardType;
   image: string;
   releaseDate: string;
