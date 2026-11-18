@@ -1,5 +1,5 @@
 import type { Card } from './types';
-import { characterOrder, createInitialState, sortCards, tierPalette } from './state';
+import { characterOrder, createInitialState, reconcileMythPairPlacement, sortCards, tierPalette } from './state';
 import type { AppState } from './state';
 import type { SortMode } from './types';
 
@@ -54,6 +54,10 @@ export function loadAppState(catalog: Card[]): AppState {
     const completePool = poolManuallyOrdered
       ? [...pool, ...missing]
       : sortCards([...pool, ...missing], catalog, normalizedSortMode, direction);
+    const mythGrouping = saved.mythGrouping === true;
+    const reconciled = mythGrouping
+      ? reconcileMythPairPlacement(completePool, tiers, catalog)
+      : { pool: completePool, tiers };
     const rarities = Array.isArray(saved.rarities)
       ? saved.rarities.filter((value): value is number => value === 3 || value === 4 || value === 5)
       : initial.rarities;
@@ -67,9 +71,10 @@ export function loadAppState(catalog: Card[]): AppState {
 
     return {
       ...initial,
-      tiers,
-      pool: completePool,
+      tiers: reconciled.tiers,
+      pool: reconciled.pool,
       poolManuallyOrdered,
+      mythGrouping,
       sortMode: normalizedSortMode,
       dateDirection: direction,
       characters,
@@ -92,6 +97,7 @@ export function persistAppState(state: AppState): void {
     tiers: state.tiers,
     pool: state.pool,
     poolManuallyOrdered: state.poolManuallyOrdered,
+    mythGrouping: state.mythGrouping,
     sortMode: state.sortMode,
     dateDirection: state.dateDirection,
     characters: state.characters,

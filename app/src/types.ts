@@ -1,6 +1,12 @@
 export type Character = 'Xavier' | 'Zayne' | 'Rafayel' | 'Sylus' | 'Caleb';
 export type CardType = 'solar' | 'lunar';
 
+export interface Myth {
+  id: string;
+  name: string;
+  part?: 1 | 2;
+}
+
 export interface Card {
   id: string;
   name: string;
@@ -9,6 +15,7 @@ export interface Card {
   type: CardType;
   image: string;
   releaseDate: string;
+  myth?: Myth;
 }
 
 export interface Tier {

@@ -19,6 +19,7 @@ export interface AppState {
   tiers: Tier[];
   pool: string[];
   poolManuallyOrdered: boolean;
+  mythGrouping: boolean;
   sortMode: SortMode;
   dateDirection: 'asc' | 'desc';
   characters: string[];
@@ -57,6 +58,7 @@ export function createInitialState(catalog: Card[]): AppState {
     tiers: initialTiers.map((tier) => ({ ...tier, cards: [...tier.cards] })),
     pool: sortCards(catalog.map((card) => card.id), catalog, 'date-character', 'asc'),
     poolManuallyOrdered: false,
+    mythGrouping: false,
     sortMode: 'date-character', dateDirection: 'asc',
     characters: [...characterOrder], rarities: [4, 5], types: ['solar'], search: '',
     theme, language, themePreference: 'system', languagePreference: 'system', selectedCard: null, dragging: null,
@@ -64,10 +66,56 @@ export function createInitialState(catalog: Card[]): AppState {
   };
 }
 
+export function reconcileMythPairPlacement(poolIds: string[], tiers: Tier[], catalog: Card[]) {
+  const pool = [...poolIds];
+  const nextTiers = tiers.map((tier) => ({ ...tier, cards: [...tier.cards] }));
+  const groups = new Map<string, Set<string>>();
+  for (const card of catalog) {
+    if (!card.myth) continue;
+    const group = groups.get(card.myth.id) ?? new Set<string>();
+    group.add(card.id);
+    groups.set(card.myth.id, group);
+  }
+
+  for (const groupIds of groups.values()) {
+    const presentIds = [...groupIds].filter((id) => pool.includes(id) || nextTiers.some((tier) => tier.cards.includes(id)));
+    if (presentIds.length < 2) continue;
+    const occupiedTiers = nextTiers
+      .map((tier, index) => ({ tier, index, members: tier.cards.filter((id) => groupIds.has(id)) }))
+      .filter((entry) => entry.members.length > 0);
+
+    if (occupiedTiers.length) {
+      const winner = occupiedTiers[0];
+      const firstId = winner.members[0];
+      const orderedIds = [firstId, ...presentIds.filter((id) => id !== firstId)];
+      const firstIndex = winner.tier.cards.indexOf(firstId);
+      const insertionIndex = winner.tier.cards.slice(0, firstIndex).filter((id) => !groupIds.has(id)).length;
+      for (const id of groupIds) {
+        const poolIndex = pool.indexOf(id);
+        if (poolIndex >= 0) pool.splice(poolIndex, 1);
+      }
+      for (const tier of nextTiers) tier.cards = tier.cards.filter((id) => !groupIds.has(id));
+      nextTiers[winner.index].cards.splice(insertionIndex, 0, ...orderedIds);
+      continue;
+    }
+
+    const orderedIds = pool.filter((id) => groupIds.has(id));
+    const firstIndex = pool.findIndex((id) => groupIds.has(id));
+    const insertionIndex = pool.slice(0, firstIndex).filter((id) => !groupIds.has(id)).length;
+    for (const id of groupIds) {
+      const poolIndex = pool.indexOf(id);
+      if (poolIndex >= 0) pool.splice(poolIndex, 1);
+    }
+    pool.splice(insertionIndex, 0, ...orderedIds);
+  }
+  return { pool, tiers: nextTiers };
+}
+
 export type Action =
   | { type: 'toggle-character'; value: string }
   | { type: 'toggle-rarity'; value: number }
   | { type: 'toggle-card-type'; value: string }
+  | { type: 'toggle-myth-grouping' }
   | { type: 'search'; value: string }
   | { type: 'sort'; mode: SortMode; direction: 'asc' | 'desc' }
   | { type: 'toggle-theme' }
@@ -80,6 +128,7 @@ export type Action =
   | { type: 'return-all-cards' }
   | { type: 'reset-ranking' }
   | { type: 'load-shared-ranking'; tiers: Tier[] }
+  | { type: 'swap-myth-order'; id: string }
   | { type: 'start-tier-reorder'; id: string | null }
   | { type: 'move-tier'; from: number; to: number }
   | { type: 'move-card'; id: string; zone: string; index: number; source?: string }
@@ -109,6 +158,11 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
     case 'toggle-card-type': {
       const active = state.types.includes(action.value);
       return { ...state, types: active ? state.types.filter((value) => value !== action.value) : [...state.types, action.value] };
+    }
+    case 'toggle-myth-grouping': {
+      const mythGrouping = !state.mythGrouping;
+      if (!mythGrouping) return { ...state, mythGrouping };
+      return { ...state, ...reconcileMythPairPlacement(state.pool, state.tiers, catalog), mythGrouping };
     }
     case 'search': return { ...state, search: action.value };
     case 'sort': return {
@@ -165,8 +219,31 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
         tiers,
         pool: sortCards(catalog.map((card) => card.id).filter((id) => !assigned.has(id)), catalog, state.sortMode, state.dateDirection),
         poolManuallyOrdered: false,
+        mythGrouping: false,
         selectedCard: null, dragging: null, dropTarget: null, tierReorderId: null,
       };
+    }
+    case 'swap-myth-order': {
+      const card = catalog.find((item) => item.id === action.id);
+      if (!state.mythGrouping || !card?.myth) return state;
+      const memberIds = new Set(catalog.filter((item) => item.myth?.id === card.myth?.id).map((item) => item.id));
+      const poolMembers = state.pool.filter((id) => memberIds.has(id));
+      if (poolMembers.length > 1) {
+        const firstIndex = state.pool.findIndex((id) => memberIds.has(id));
+        const nextPool = state.pool.filter((id) => !memberIds.has(id));
+        nextPool.splice(firstIndex, 0, ...poolMembers.reverse());
+        return { ...state, pool: nextPool, poolManuallyOrdered: true };
+      }
+      const owner = state.tiers.find((tier) => tier.cards.some((id) => memberIds.has(id)));
+      if (!owner) return state;
+      const tierMembers = owner.cards.filter((id) => memberIds.has(id));
+      if (tierMembers.length < 2) return state;
+      const firstIndex = owner.cards.findIndex((id) => memberIds.has(id));
+      const tiers = state.tiers.map((tier) => tier.id === owner.id
+        ? { ...tier, cards: tier.cards.filter((id) => !memberIds.has(id)) }
+        : tier);
+      tiers.find((tier) => tier.id === owner.id)!.cards.splice(firstIndex, 0, ...tierMembers.reverse());
+      return { ...state, tiers };
     }
     case 'start-tier-reorder': return { ...state, tierReorderId: action.id };
     case 'move-tier': {
@@ -181,14 +258,21 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
       if (!source || source === action.zone) {
         if (!source) return state;
       }
-      const sourceIndex = source === 'pool'
-        ? state.pool.indexOf(action.id)
-        : state.tiers.find((tier) => tier.id === source)?.cards.indexOf(action.id) ?? -1;
-      const pool = state.pool.filter((id) => id !== action.id);
-      const tiers = state.tiers.map((tier) => ({ ...tier, cards: tier.cards.filter((id) => id !== action.id) }));
+      const card = catalog.find((item) => item.id === action.id);
+      const movingIds = state.mythGrouping && card?.myth
+        ? (source === 'pool' ? state.pool : state.tiers.find((tier) => tier.id === source)?.cards ?? [])
+          .filter((id) => catalog.find((item) => item.id === id)?.myth?.id === card.myth?.id)
+        : [action.id];
+      const sourceCards = source === 'pool' ? state.pool : state.tiers.find((tier) => tier.id === source)?.cards ?? [];
+      const sourceIndex = sourceCards.indexOf(action.id);
+      const removedBeforeTarget = source === action.zone
+        ? sourceCards.slice(0, Math.max(0, action.index)).filter((id) => movingIds.includes(id)).length
+        : 0;
+      const pool = state.pool.filter((id) => !movingIds.includes(id));
+      const tiers = state.tiers.map((tier) => ({ ...tier, cards: tier.cards.filter((id) => !movingIds.includes(id)) }));
       if (action.zone === 'pool' && source !== 'pool' && !state.poolManuallyOrdered) {
         return {
-          ...state, pool: sortCards([...pool, action.id], catalog, state.sortMode, state.dateDirection),
+          ...state, pool: sortCards([...pool, ...movingIds], catalog, state.sortMode, state.dateDirection),
           tiers, selectedCard: null, dragging: null, dropTarget: null,
         };
       }
@@ -196,9 +280,11 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
         ? pool
         : tiers.find((tier) => tier.id === action.zone)?.cards;
       if (!destination) return state;
-      const adjustedIndex = source === action.zone && sourceIndex >= 0 && sourceIndex < action.index ? action.index - 1 : action.index;
+      const adjustedIndex = source === action.zone && sourceIndex >= 0
+        ? action.index - removedBeforeTarget
+        : action.index;
       const index = Math.max(0, Math.min(adjustedIndex, destination.length));
-      destination.splice(index, 0, action.id);
+      destination.splice(index, 0, ...movingIds);
       return {
         ...state, pool, tiers,
         poolManuallyOrdered: action.zone === 'pool' ? (state.poolManuallyOrdered || source === 'pool') : state.poolManuallyOrdered,

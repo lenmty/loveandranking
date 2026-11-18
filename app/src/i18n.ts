@@ -2,7 +2,8 @@ import type { Language } from './types';
 
 export const copy = {
   ru: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG', share: 'Поделиться',
+    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG', share: 'Поделиться', groupMyths: 'Группировать мифы',
+    mythPair: 'Пара мифа', swapMythOrder: 'Поменять порядок карт в пачке',
     addTier: 'Добавить уровень', pool: 'Карты', search: 'Поиск по названию',
     sortDate: 'По дате', sortCharacter: 'По персонажу',
     oldest: 'Сначала старые', newest: 'Сначала новые', filters: 'Фильтры',
@@ -31,7 +32,8 @@ export const copy = {
     shareLink: 'Ссылка на рейтинг', copyLink: 'Скопировать ссылку',
   },
   en: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG', share: 'Share',
+    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG', share: 'Share', groupMyths: 'Group myths',
+    mythPair: 'Myth pair', swapMythOrder: 'Swap the order of memories in the pair',
     addTier: 'Add tier', pool: 'Memories', search: 'Search memories',
     sortDate: 'By date', sortCharacter: 'By character',
     oldest: 'Oldest first', newest: 'Newest first', filters: 'Filters',

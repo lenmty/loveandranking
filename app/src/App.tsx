@@ -5,6 +5,7 @@ import { characterNames, copy } from './i18n';
 import { reducer, sortCards, tierPalette } from './state';
 import { loadAppState, persistAppState } from './persistence';
 import { decodeSharedRanking, encodeSharedRanking, getShareFragment, hasCustomizedRanking, sameRanking } from './sharing';
+import { cardDisplayUnits } from './myths';
 import type { AppState } from './state';
 import type { Card, Language, Tier } from './types';
 import type { SharedRanking } from './sharing';
@@ -58,6 +59,8 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
     filter: <><path d="M4 5h16M7 12h10m-7 7h4"/><circle cx="8" cy="5" r="1.5" fill="var(--surface)"/><circle cx="15" cy="12" r="1.5" fill="var(--surface)"/><circle cx="11" cy="19" r="1.5" fill="var(--surface)"/></>,
     check: <path d="m5 12 4 4L19 6"/>,
     arrow: <><path d="M7 7h10v10"/><path d="m17 7-10 10"/></>,
+    myth: <><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></>,
+    swap: <><path d="m16 3 4 4-4 4M4 7h16M8 21l-4-4 4-4m12 4H4"/></>,
   };
   return <svg {...common}>{shapes[name] ?? null}</svg>;
 }
@@ -114,7 +117,7 @@ function cardDropPosition(container: HTMLElement, clientX: number, clientY: numb
     }
     if (clientY < nextRowTop) {
       const last = row[row.length - 1];
-      return { index: Number(last.dataset.cardIndex) + 1, anchorId: last.dataset.cardId ?? null, after: true };
+      return { index: Number(last.dataset.cardIndex) + Number(last.dataset.cardSpan ?? 1), anchorId: last.dataset.cardId ?? null, after: true };
     }
   }
 
@@ -125,11 +128,12 @@ function cardDropPosition(container: HTMLElement, clientX: number, clientY: numb
     }
   }
   const last = activeRow[activeRow.length - 1];
-  return { index: Number(last.dataset.cardIndex) + 1, anchorId: last.dataset.cardId ?? null, after: true };
+  return { index: Number(last.dataset.cardIndex) + Number(last.dataset.cardSpan ?? 1), anchorId: last.dataset.cardId ?? null, after: true };
 }
 
-function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggingId, dragSourceRemoved, t, language, onRename, onColor, onDelete, onTierPointerDown, onMove, onOpen, onDragStart }: {
+function TierRow({ tier, index, total, cardsById, groupMyths, reorderId, dropTarget, draggingId, dragSourceRemoved, t, language, onRename, onColor, onDelete, onTierPointerDown, onMove, onOpen, onDragStart }: {
   tier: Tier; index: number; total: number; cardsById: Map<string, Card>; reorderId: string | null;
+  groupMyths: boolean;
   dropTarget: AppState['dropTarget']; draggingId: string | null; dragSourceRemoved: boolean;
   t: Record<string, string>; language: Language; onRename: (id: string, name: string) => void;
   onColor: (id: string, color: string) => void; onDelete: (id: string) => void;
@@ -141,7 +145,7 @@ function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggin
   const [menuOpen, setMenuOpen] = useState(false);
   const [draft, setDraft] = useState(tier.name);
   useEffect(() => { setDraft(tier.name); }, [tier.name]);
-  const tierCards = tier.cards.map((id) => cardsById.get(id)).filter((card): card is Card => Boolean(card));
+  const tierCards = cardDisplayUnits(tier.cards, cardsById, groupMyths);
   const darkLabel = tierLabelUsesLightText(tier.color);
   return <section className={`tier-row ${reorderId === tier.id ? 'tier-row--moving' : ''}`} data-tier-index={index}>
     <div className={`tier-label ${darkLabel ? 'tier-label--dark' : ''}`} style={{ '--tier-color': tier.color } as CSSProperties}>
@@ -152,10 +156,10 @@ function TierRow({ tier, index, total, cardsById, reorderId, dropTarget, draggin
         onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.blur(); } if (event.key === 'Escape') { setDraft(tier.name); event.currentTarget.blur(); } }} />
         : <button className="tier-name" type="button" onClick={() => setEditing(true)} aria-label={t.renameTier}>{tier.name}</button>}
     </div>
-    <div className={`tier-content drop-zone ${dropTarget?.zone === tier.id ? 'is-drop-target' : ''}`} data-drop-zone={tier.id} data-drop-count={tierCards.length}>
-      {tierCards.map((card, cardIndex) => <Fragment key={card.id}>
+    <div className={`tier-content drop-zone ${dropTarget?.zone === tier.id ? 'is-drop-target' : ''}`} data-drop-zone={tier.id} data-drop-count={tier.cards.length}>
+      {tierCards.map(({ card, members, index: cardIndex, span }) => <Fragment key={card.id}>
         {dropTarget?.zone === tier.id && dropTarget.anchorId === card.id && !dropTarget.after && <CardInsertionSlot tier/>}
-        <CardTile card={card} language={language} index={cardIndex} zone={tier.id} isDragging={draggingId === card.id} dragSourceRemoved={dragSourceRemoved && draggingId === card.id} onOpen={onOpen} onDragStart={onDragStart}/>
+        <CardTile card={card} pairCount={members.length} displaySpan={span} language={language} index={cardIndex} zone={tier.id} isDragging={draggingId === card.id} dragSourceRemoved={dragSourceRemoved && draggingId === card.id} onOpen={onOpen} onDragStart={onDragStart}/>
         {dropTarget?.zone === tier.id && dropTarget.anchorId === card.id && dropTarget.after && <CardInsertionSlot tier/>}
       </Fragment>)}
       {dropTarget?.zone === tier.id && dropTarget.anchorId === null && <CardInsertionSlot tier/>}
@@ -180,11 +184,13 @@ function CardInsertionSlot({ tier = false }: { tier?: boolean }) {
   return <span className={`card-insertion-slot ${tier ? 'card-insertion-slot--tier' : ''}`} aria-hidden="true"/>;
 }
 
-function CardTile({ card, language, index, zone, isDragging, dragSourceRemoved, onOpen, onDragStart }: {
+function CardTile({ card, pairCount = 1, displaySpan = 1, language, index, zone, isDragging, dragSourceRemoved, onOpen, onDragStart }: {
+  pairCount?: number; displaySpan?: number;
   card: Card; language: Language; index: number; zone: string; isDragging: boolean; dragSourceRemoved: boolean;
   onOpen: (id: string) => void; onDragStart: (id: string, event: PointerEvent) => void;
 }) {
-  return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${isDragging ? 'card-tile--dragging' : ''} ${dragSourceRemoved ? 'card-tile--dragging-away' : ''}`} data-card-id={card.id} data-card-index={index} data-card-zone={zone}>
+  return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${pairCount > 1 ? 'card-tile--myth-stack' : ''} ${isDragging ? 'card-tile--dragging' : ''} ${dragSourceRemoved ? 'card-tile--dragging-away' : ''}`} data-card-id={card.id} data-card-index={index} data-card-span={displaySpan} data-card-zone={zone}>
+    {pairCount > 1 && <span className="myth-stack-layers" aria-hidden="true"><i/><i/></span>}
     <button className="card-image-button" type="button" onClick={() => onOpen(card.id)} aria-label={`${labelForCharacter(card, language)} — ${card.name}`}>
       <img className="card-image" src={cardImageUrl(card.image)} alt={`${labelForCharacter(card, language)} — ${card.name}`} loading="lazy" draggable={false}/>
     </button>
@@ -201,7 +207,7 @@ export function App() {
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [poolDockVisible, setPoolDockVisible] = useState(false);
   const [poolDockExpanded, setPoolDockExpanded] = useState(false);
-  const [dragPreview, setDragPreview] = useState<{ card: Card; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
+  const [dragPreview, setDragPreview] = useState<{ card: Card; pairCount: number; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
   const dragPreviewElementRef = useRef<HTMLElement | null>(null);
   const dragPreviewOffsetRef = useRef<{ x: number; y: number } | null>(null);
   const dragOriginBoundsRef = useRef<DOMRect | null>(null);
@@ -220,13 +226,24 @@ export function App() {
   const dispatch = dispatchBase;
   const t = copy[state.language];
   const cardsById = useMemo(() => new Map(cards.map((card) => [card.id, card])), []);
-  const visiblePool = useMemo(() => state.pool.filter((id) => {
-    const card = cardsById.get(id)!;
-    return state.characters.includes(card.character) && state.rarities.includes(card.rarity)
-      && state.types.includes(card.type) && card.name.toLocaleLowerCase().includes(state.search.trim().toLocaleLowerCase());
-  }), [state.pool, state.characters, state.rarities, state.types, state.search, cardsById]);
+  const poolUnits = useMemo(() => cardDisplayUnits(state.pool, cardsById, state.mythGrouping), [state.pool, cardsById, state.mythGrouping]);
+  const visiblePool = useMemo(() => {
+    const query = state.search.trim().toLocaleLowerCase();
+    return poolUnits.filter((unit) => unit.members.some((card) =>
+      state.characters.includes(card.character) && state.rarities.includes(card.rarity) && state.types.includes(card.type)
+      && (card.name.toLocaleLowerCase().includes(query) || card.myth?.name.toLocaleLowerCase().includes(query)),
+    ));
+  }, [poolUnits, state.characters, state.rarities, state.types, state.search]);
+  const hasMythPairs = useMemo(() => {
+    const counts = new Map<string, number>();
+    cards.forEach((card) => { if (card.myth) counts.set(card.myth.id, (counts.get(card.myth.id) ?? 0) + 1); });
+    return [...counts.values()].some((count) => count > 1);
+  }, []);
   const selected = state.selectedCard ? cardsById.get(state.selectedCard) : undefined;
   const selectedTier = state.selectedCard ? state.tiers.find((tier) => tier.cards.includes(state.selectedCard!)) : undefined;
+  const selectedPack = selected && state.mythGrouping && selected.myth
+    ? (selectedTier?.cards ?? state.pool).filter((id) => cardsById.get(id)?.myth?.id === selected.myth?.id).map((id) => cardsById.get(id)!)
+    : selected ? [selected] : [];
   const pendingDeleteTier = confirmation?.type === 'delete-tier'
     ? state.tiers.find((tier) => tier.id === confirmation.id)
     : undefined;
@@ -255,6 +272,7 @@ export function App() {
         const current = stateRef.current;
         if (!hasCustomizedRanking(current.tiers) || sameRanking(current.tiers, shared.tiers)) {
           if (!sameRanking(current.tiers, shared.tiers)) dispatch({ type: 'load-shared-ranking', tiers: shared.tiers });
+          else if (current.mythGrouping) dispatch({ type: 'toggle-myth-grouping' });
           const notice = sharedRankingNotice(shared, copy[current.language]);
           if (notice) dispatch({ type: 'notice', value: notice });
           clearSharedRankFragment();
@@ -274,7 +292,7 @@ export function App() {
   }, []);
   useEffect(() => {
     persistAppState(state);
-  }, [state.tiers, state.pool, state.poolManuallyOrdered, state.sortMode, state.dateDirection, state.characters, state.rarities, state.types, state.search, state.themePreference, state.languagePreference]);
+  }, [state.tiers, state.pool, state.poolManuallyOrdered, state.mythGrouping, state.sortMode, state.dateDirection, state.characters, state.rarities, state.types, state.search, state.themePreference, state.languagePreference]);
   useEffect(() => {
     if (!state.notice) return;
     const timer = window.setTimeout(() => dispatch({ type: 'notice', value: null }), 5000);
@@ -502,7 +520,11 @@ export function App() {
       const offsetX = event.clientX - bounds.left;
       const offsetY = event.clientY - bounds.top;
       dragPreviewOffsetRef.current = { x: offsetX, y: offsetY };
-      setDragPreview({ card, width: bounds.width, height: bounds.height, offsetX, offsetY, x: bounds.left, y: bounds.top });
+      const sourceIds = state.pool.includes(id) ? state.pool : state.tiers.find((tier) => tier.cards.includes(id))?.cards ?? [];
+      const pairCount = state.mythGrouping && card.myth
+        ? sourceIds.filter((memberId) => cardsById.get(memberId)?.myth?.id === card.myth?.id).length
+        : 1;
+      setDragPreview({ card, pairCount, width: bounds.width, height: bounds.height, offsetX, offsetY, x: bounds.left, y: bounds.top });
       document.body.classList.add('is-dragging-card');
     }
     dispatch({ type: 'drag-state', id });
@@ -516,7 +538,7 @@ export function App() {
   };
 
   const renderTierCard = (tier: Tier, index: number, total: number) => (
-    <TierRow key={tier.id} tier={tier} index={index} total={total} cardsById={cardsById} reorderId={state.tierReorderId}
+    <TierRow key={tier.id} tier={tier} index={index} total={total} cardsById={cardsById} groupMyths={state.mythGrouping} reorderId={state.tierReorderId}
       dropTarget={state.dropTarget} draggingId={state.dragging} dragSourceRemoved={dragSourceRemoved} t={t} language={state.language}
       onRename={(id, name) => dispatch({ type: 'rename-tier', id, name })}
       onColor={(id, color) => dispatch({ type: 'color-tier', id, color })}
@@ -542,13 +564,14 @@ export function App() {
       const gap = 4;
       const contentWidth = width - padding * 2 - labelWidth - actionRailWidth - 16;
       const columns = Math.max(1, Math.floor((contentWidth + gap) / (cardSize + gap)));
+      const unitsByTier = new Map(state.tiers.map((tier) => [tier.id, cardDisplayUnits(tier.cards, cardsById, state.mythGrouping)]));
       const measureCanvas = document.createElement('canvas');
       const measureContext = measureCanvas.getContext('2d');
       if (!measureContext) throw new Error('Canvas unavailable');
       measureContext.font = exportFont;
       const tierLines = new Map(state.tiers.map((tier) => [tier.id, wrapCanvasText(measureContext, tier.name, labelTextWidth)]));
       const tierHeightOf = (tier: Tier) => {
-        const cardRows = Math.max(1, Math.ceil(tier.cards.length / columns));
+        const cardRows = Math.max(1, Math.ceil((unitsByTier.get(tier.id)?.length ?? 0) / columns));
         const cardHeight = cardRows * cardSize + (cardRows - 1) * gap;
         const lines = tierLines.get(tier.id) ?? [' '];
         const nameBoxHeight = Math.max(34, lines.length * exportLineHeight + 12);
@@ -566,7 +589,8 @@ export function App() {
       context.fillStyle = dark ? '#17191d' : '#f5f5f2';
       context.fillRect(0, 0, width, height);
       const loadedImages = new Map<string, HTMLImageElement>();
-      await Promise.all(cards.filter((card) => state.tiers.some((tier) => tier.cards.includes(card.id))).map((card) => new Promise<void>((resolve, reject) => {
+      const exportIds = new Set([...unitsByTier.values()].flatMap((units) => units.map((unit) => unit.card.id)));
+      await Promise.all(cards.filter((card) => exportIds.has(card.id)).map((card) => new Promise<void>((resolve, reject) => {
         const image = new Image(); image.crossOrigin = 'anonymous'; image.onload = () => { loadedImages.set(card.id, image); resolve(); }; image.onerror = reject; image.src = cardImageUrl(card.image);
       })));
       let y = padding;
@@ -603,10 +627,16 @@ export function App() {
         context.font = exportFont;
         context.textBaseline = 'top';
         lines.forEach((line, lineIndex) => context.fillText(line, textX, textY + lineIndex * exportLineHeight));
-        tier.cards.forEach((id, index) => {
-          const image = loadedImages.get(id); if (!image) return;
+        (unitsByTier.get(tier.id) ?? []).forEach((unit, index) => {
+          const image = loadedImages.get(unit.card.id); if (!image) return;
           const x = padding + labelWidth + 8 + (index % columns) * (cardSize + gap);
           const imageY = y + Math.floor(index / columns) * (cardSize + gap);
+          if (unit.members.length > 1) {
+            context.fillStyle = dark ? '#34373d' : '#dfe1dc';
+            context.fillRect(x + 3, imageY + 3, cardSize, cardSize);
+            context.strokeStyle = dark ? 'rgba(255,255,255,.35)' : 'rgba(28,32,29,.2)';
+            context.strokeRect(x + 3.5, imageY + 3.5, cardSize - 1, cardSize - 1);
+          }
           context.drawImage(image, x, imageY, cardSize, cardSize);
         });
         y += tierHeight + rowGap;
@@ -695,11 +725,11 @@ export function App() {
   };
 
   const renderPoolCards = () => <>
-    {visiblePool.map((id) => { const card = cardsById.get(id)!; return <Fragment key={id}>
-      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && !state.dropTarget.after && <CardInsertionSlot/>}
-      <CardTile card={card} language={state.language} index={state.pool.indexOf(id)} zone="pool" isDragging={state.dragging === id} dragSourceRemoved={dragSourceRemoved && state.dragging === id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
-      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === id && state.dropTarget.after && <CardInsertionSlot/>}
-    </Fragment>; })}
+    {visiblePool.map(({ card, members, index, span }) => <Fragment key={card.id}>
+      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === card.id && !state.dropTarget.after && <CardInsertionSlot/>}
+      <CardTile card={card} pairCount={members.length} displaySpan={span} language={state.language} index={index} zone="pool" isDragging={state.dragging === card.id} dragSourceRemoved={dragSourceRemoved && state.dragging === card.id} onOpen={(cardId) => dispatch({ type: 'open-card', id: cardId })} onDragStart={beginCardDrag}/>
+      {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === card.id && state.dropTarget.after && <CardInsertionSlot/>}
+    </Fragment>)}
     {state.dropTarget?.zone === 'pool' && state.dropTarget.anchorId === null && <CardInsertionSlot/>}
     {!visiblePool.length && state.dropTarget?.zone !== 'pool' && <div className="empty-state"><span className="empty-icon"><Icon name="search" size={21}/></span><span>{state.pool.length ? t.emptyPool : t.noCards}</span></div>}
   </>;
@@ -734,12 +764,17 @@ export function App() {
     </section>
 
     <section className="pool-section" aria-label={t.pool}>
-      <div className="pool-heading"><h1>{t.pool}<span className="pool-count">{visiblePool.length}<small> / {state.pool.length}</small></span></h1></div>
+      <div className="pool-heading"><h1>{t.pool}<span className="pool-count">{visiblePool.length}<small> / {poolUnits.length}</small></span></h1></div>
       <div className="filter-toolbar"><div className="filter-panel">
         <div className="filter-group"><span className="filter-label">{t.character}</span>{characters.map((character) => <label className="filter-chip" key={character}><input type="checkbox" checked={state.characters.includes(character)} onChange={() => toggleFilter('toggle-character', character)}/><span>{characterNames[character][state.language]}</span></label>)}</div>
         <div className="filter-group"><span className="filter-label">{t.rarity}</span>{[5, 4, 3].map((rarity) => <label className="filter-chip" key={rarity}><input type="checkbox" checked={state.rarities.includes(rarity)} onChange={() => toggleFilter('toggle-rarity', rarity)}/><span>{rarity === 5 ? t.stars5 : rarity === 4 ? t.stars4 : t.stars3}</span></label>)}</div>
         <div className="filter-group"><span className="filter-label">{t.type}</span>{(['solar', 'lunar'] as const).map((type) => <label className="filter-chip" key={type}><input type="checkbox" checked={state.types.includes(type)} onChange={() => toggleFilter('toggle-card-type', type)}/><span>{t[type]}</span></label>)}</div>
-      </div><div className="pool-tools"><label className="search-field"><Icon name="search" size={16}/><input value={state.search} onChange={(event) => dispatch({ type: 'search', value: event.target.value })} placeholder={t.search} aria-label={t.search}/>{state.search && <button type="button" aria-label={t.close} onClick={() => dispatch({ type: 'search', value: '' })}><Icon name="close" size={14}/></button>}</label></div></div>
+      </div><div className="pool-tools">
+        <button className={`myth-toggle ${state.mythGrouping ? 'is-active' : ''}`} type="button" aria-pressed={state.mythGrouping} aria-label={t.groupMyths} title={t.groupMyths} disabled={!hasMythPairs} onClick={() => dispatch({ type: 'toggle-myth-grouping' })}>
+          <Icon name="myth" size={16}/><span>{t.groupMyths}</span><i aria-hidden="true"><b/></i>
+        </button>
+        <label className="search-field"><Icon name="search" size={16}/><input value={state.search} onChange={(event) => dispatch({ type: 'search', value: event.target.value })} placeholder={t.search} aria-label={t.search}/>{state.search && <button type="button" aria-label={t.close} onClick={() => dispatch({ type: 'search', value: '' })}><Icon name="close" size={14}/></button>}</label>
+      </div></div>
       <div className="sort-controls">
         <div className="segmented-control" role="group" aria-label={state.language === 'ru' ? 'Сортировка' : 'Sorting'}>
           <button type="button" className={state.sortMode === 'date-character' ? 'is-selected' : ''} onClick={() => dispatch({ type: 'sort', mode: 'date-character', direction: state.dateDirection })}>{t.sortDate}</button>
@@ -768,8 +803,9 @@ export function App() {
       </div>
     </aside>
 
-    {dragPreview && <article ref={(element) => { dragPreviewElementRef.current = element; }} className="card-tile card-drag-preview" aria-hidden="true"
+    {dragPreview && <article ref={(element) => { dragPreviewElementRef.current = element; }} className={`card-tile card-drag-preview ${dragPreview.pairCount > 1 ? 'card-tile--myth-stack' : ''}`} aria-hidden="true"
       style={{ width: dragPreview.width, height: dragPreview.height, transform: `translate3d(${dragPreview.x}px, ${dragPreview.y}px, 0)` }}>
+      {dragPreview.pairCount > 1 && <span className="myth-stack-layers" aria-hidden="true"><i/><i/></span>}
       <img className="card-image" src={cardImageUrl(dragPreview.card.image)} alt="" draggable={false} loading="eager" style={{ width: '100%', height: '100%' }}/>
     </article>}
 
@@ -780,7 +816,7 @@ export function App() {
         dispatch({ type: 'open-card', id: null });
       }
     }}>
-        <section className="card-modal" role="dialog" aria-modal="true" aria-label={`${labelForCharacter(selected, state.language)} — ${selected.name}`} onKeyDown={(event) => {
+        <section className={`card-modal ${selectedPack.length > 1 ? 'card-modal--myth-pair' : ''}`} role="dialog" aria-modal="true" aria-label={`${labelForCharacter(selected, state.language)} — ${selected.name}`} onKeyDown={(event) => {
           if (event.key !== 'Tab') return;
           const focusable = [...event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled)')];
           if (!focusable.length) return;
@@ -789,7 +825,15 @@ export function App() {
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
         }}>
         <button className="modal-close icon-button" type="button" aria-label={t.close} onClick={() => dispatch({ type: 'open-card', id: null })}><Icon name="close"/></button>
-        <div className="modal-card-preview"><img src={cardImageUrl(selected.image)} alt={`${labelForCharacter(selected, state.language)} — ${selected.name}`}/><div className="modal-card-meta"><span>{labelForCharacter(selected, state.language)}</span><strong>{selected.name}</strong><small>{selected.rarity}★ <span>·</span> {t[selected.type]}</small></div></div>
+        <div className={`modal-memory-previews ${selectedPack.length > 1 ? 'modal-memory-previews--pair' : ''}`}>
+          {selectedPack.length > 1 && <div className="modal-myth-title"><Icon name="myth" size={15}/><strong>{selected.myth?.name}</strong></div>}
+          {selectedPack.map((memory) => <div className="modal-card-preview" key={memory.id}>
+            <img src={cardImageUrl(memory.image)} alt={`${labelForCharacter(memory, state.language)} — ${memory.name}`}/>
+            <div className="modal-card-meta"><span>{labelForCharacter(memory, state.language)}</span><strong>{memory.name}</strong><small>{memory.rarity}★ <span>·</span> {t[memory.type]}</small></div>
+            {selectedPack.length === 1 && memory.myth && <div className="modal-myth-link"><Icon name="myth" size={14}/><span>{memory.myth.name}</span></div>}
+          </div>)}
+          {selectedPack.length > 1 && <button className="myth-order-button" type="button" title={t.swapMythOrder} aria-label={t.swapMythOrder} onClick={() => dispatch({ type: 'swap-myth-order', id: selected.id })}><Icon name="swap" size={16}/></button>}
+        </div>
         <div className="modal-destinations"><span className="filter-label">{t.moveTo}</span>{state.tiers.map((tier) => <button key={tier.id} type="button" className={`destination-button ${selectedTier?.id === tier.id ? 'is-current' : ''}`} onClick={() => handleCardDrop(selected.id, tier.id, tier.cards.length)}><span className="destination-color" style={{ background: tier.color }}/><span>{tier.name}</span>{selectedTier?.id === tier.id && <Icon name="check" size={15}/>}</button>)}
           {selectedTier && <button className="return-button" type="button" onClick={() => handleCardDrop(selected.id, 'pool', state.poolManuallyOrdered ? 0 : sortCards([...state.pool, selected.id], cards, state.sortMode, state.dateDirection).indexOf(selected.id))}><Icon name="arrow" size={15}/>{t.returnPool}</button>}
         </div>
