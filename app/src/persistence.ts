@@ -25,7 +25,9 @@ export function loadAppState(catalog: Card[]): AppState {
     if (!isRecord(saved) || saved.version !== 1) return initial;
 
     const cardIds = new Set(catalog.map((card) => card.id));
-    const mode: SortMode = saved.sortMode === 'character-date' ? 'character-date' : 'date-character';
+    const mode: SortMode = saved.sortMode === 'character-date'
+      ? 'character-date'
+      : saved.sortMode === 'rarity-date' ? 'rarity-date' : 'date-character';
     const direction = saved.dateDirection === 'desc' ? 'desc' : 'asc';
     const rawTiers = Array.isArray(saved.tiers) ? saved.tiers : initial.tiers;
     const tierRecords = rawTiers.filter((tier): tier is Record<string, unknown> =>
@@ -49,7 +51,13 @@ export function loadAppState(catalog: Card[]): AppState {
     const characters = Array.isArray(saved.characters)
       ? saved.characters.filter((value): value is string => typeof value === 'string' && validCharacters.has(value))
       : initial.characters;
-    const normalizedSortMode = characters.length === 1 ? 'date-character' : mode;
+    const rarities = Array.isArray(saved.rarities)
+      ? saved.rarities.filter((value): value is number => value === 3 || value === 4 || value === 5)
+      : initial.rarities;
+    const normalizedSortMode = characters.length === 1 && mode === 'character-date'
+      || rarities.length === 1 && mode === 'rarity-date'
+      ? 'date-character'
+      : mode;
     const poolManuallyOrdered = saved.poolManuallyOrdered === true && normalizedSortMode === mode;
     const completePool = poolManuallyOrdered
       ? [...pool, ...missing]
@@ -58,9 +66,6 @@ export function loadAppState(catalog: Card[]): AppState {
     const reconciled = mythGrouping
       ? reconcileMythPairPlacement(completePool, tiers, catalog)
       : { pool: completePool, tiers };
-    const rarities = Array.isArray(saved.rarities)
-      ? saved.rarities.filter((value): value is number => value === 3 || value === 4 || value === 5)
-      : initial.rarities;
     const types = Array.isArray(saved.types)
       ? saved.types.filter((value): value is string => typeof value === 'string' && validCardTypes.has(value))
       : initial.types;

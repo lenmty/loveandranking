@@ -7,7 +7,7 @@ const appDir = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
-  // Use the isolated staging catalogue until it is ready to be promoted.
-  // VITE_ASSET_BASE_URL can later point to a separate image repository or CDN.
-  publicDir: resolve(appDir, '../CardImporter/standalone/output/images'),
+  // Images live outside the app so this directory can move to its own repository.
+  // VITE_ASSET_BASE_URL can point to that repository or a CDN when needed.
+  publicDir: resolve(appDir, '../assets/memories'),
 });

@@ -2,10 +2,10 @@ import type { Language } from './types';
 
 export const copy = {
   ru: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG', share: 'Поделиться', groupMyths: 'Группировать мифы',
+    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG', exporting: 'Идёт экспорт', share: 'Поделиться', groupMyths: 'Группировать мифы',
     mythPair: 'Пара мифа', swapMythOrder: 'Поменять порядок карт в пачке',
     addTier: 'Добавить уровень', pool: 'Карты', search: 'Поиск по названию',
-    sortDate: 'По дате', sortCharacter: 'По персонажу',
+    sortDate: 'По дате', sortRarity: 'По редкости', sortCharacter: 'По фавориту',
     oldest: 'Сначала старые', newest: 'Сначала новые', filters: 'Фильтры',
     character: 'Персонаж', rarity: 'Редкость', type: 'Тип', all: 'Все',
     solar: 'Solar', lunar: 'Lunar', stars3: '3 звезды', stars4: '4 звезды', stars5: '5 звёзд',
@@ -25,17 +25,17 @@ export const copy = {
     shareInvalid: 'Не удалось открыть рейтинг по ссылке: ссылка повреждена или формат не поддерживается.',
     shareSkipped: 'Пропущено воспоминаний: {count}.',
     shareConflictTitle: 'Найден рейтинг, сохранённый на этом устройстве',
-    shareConflictMessage: 'Открыть рейтинг из ссылки? Сохранённый на устройстве рейтинг будет заменён.',
+    shareConflictMessage: 'Открыть рейтинг из ссылки? Сохранённый на устройстве рейтинг будет потерян.',
     shareOpenMine: 'Открыть мой рейтинг', shareOpenLinked: 'Открыть рейтинг из ссылки',
     shareCopied: 'Ссылка скопирована.', shareTooLong: 'Не удалось создать ссылку: рейтинг слишком большой.',
     shareCreateError: 'Не удалось создать ссылку на рейтинг.',
-    shareLink: 'Ссылка на рейтинг', copyLink: 'Скопировать ссылку',
+    shareLink: 'Ссылка на рейтинг', copyLink: 'Скопировать ссылку', shareCopyFailed: 'Не удалось скопировать ссылку. Выделите её и скопируйте вручную.',
   },
   en: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG', share: 'Share', groupMyths: 'Group myths',
+    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG', exporting: 'Exporting', share: 'Share', groupMyths: 'Group myths',
     mythPair: 'Myth pair', swapMythOrder: 'Swap the order of memories in the pair',
     addTier: 'Add tier', pool: 'Memories', search: 'Search memories',
-    sortDate: 'By date', sortCharacter: 'By character',
+    sortDate: 'By date', sortRarity: 'By rarity', sortCharacter: 'By Love Interest',
     oldest: 'Oldest first', newest: 'Newest first', filters: 'Filters',
     character: 'Character', rarity: 'Rarity', type: 'Type', all: 'All',
     solar: 'Solar', lunar: 'Lunar', stars3: '3 stars', stars4: '4 stars', stars5: '5 stars',
@@ -55,11 +55,11 @@ export const copy = {
     shareInvalid: 'Could not open ranking: the link is invalid or unsupported.',
     shareSkipped: 'Skipped memories: {count}.',
     shareConflictTitle: 'A ranking saved on this device was found',
-    shareConflictMessage: 'Open the ranking from this link? It will replace the ranking saved on this device.',
+    shareConflictMessage: 'Open the ranking from this link? Your ranking saved on this device will be lost.',
     shareOpenMine: 'Open my ranking', shareOpenLinked: 'Open linked ranking',
     shareCopied: 'Link copied.', shareTooLong: 'Could not create the link: this ranking is too large.',
     shareCreateError: 'Could not create a link for this ranking.',
-    shareLink: 'Ranking link', copyLink: 'Copy link',
+    shareLink: 'Ranking link', copyLink: 'Copy link', shareCopyFailed: 'Could not copy the link. Select it and copy it manually.',
   },
 } satisfies Record<Language, Record<string, string>>;
 

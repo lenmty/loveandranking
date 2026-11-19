@@ -1,30 +1,26 @@
-# CardRank screenshot importer
+# CardRank card importer
 
-## Launch
+The importer is a local tool for adding memories to `app/cards.json` and their WebP images to `assets/memories/`.
 
-1. Put game screenshots directly in `CardImporter/incoming/`.
-2. Double-click `RunImporter.command` in Finder.
-3. Read the per-file results in Terminal. Successfully imported screenshots are removed from `incoming`; files that fail validation or processing stay there.
+## Run
 
-Supported inputs are PNG and JPEG screenshots at the current game screenshot layout. Recognition runs locally with Apple Vision; Solar/Lunar uses the alpha PNG templates in `tools/card-import/templates/`.
+1. Put screenshots in `CardImporter/incoming/`.
+2. Double-click `CardImporter/RunImporter.command`.
+3. Review the per-file results in Terminal and the JSON report in `CardImporter/reports/`.
 
-## Screenshot names
+Successfully imported screenshots are removed from `incoming/`. Files that fail validation or processing stay there.
 
-- Most cards: `DD.MM.YY.PNG` or `DD.MM.YYYY.PNG`, for example `17.11.26.PNG`.
-- 5★ Solar: add the myth after an underscore, for example `17.11.26_Moonlit_Reserve.PNG`. That suffix becomes the card name. Other card names come from OCR; favorites, rarity, and type are always recognized from the screenshot.
-- A myth suffix on a card other than 5★ Solar is rejected and the source is kept.
+## Screenshot filenames
 
-The two-digit year is interpreted as 2000–2099. Supported screenshot extensions are `.png`, `.jpg`, and `.jpeg` (case-insensitive).
+- Most memories: `DD.MM.YY.PNG` or `DD.MM.YYYY.PNG`.
+- 5★ Solar myth pairs: `DD.MM.YY_myth_name_1.PNG` and `DD.MM.YY_myth_name_2.PNG`.
 
-## Local requirements
+For a myth pair, the screenshot OCR supplies each memory's name. The filename suffix supplies the shared myth name and pair order. A myth suffix is only accepted for 5★ Solar memories. 3★ and 4★ memories are also supported.
 
-- macOS with Apple Vision and the Swift command-line tool available as `swift`.
-- Python 3 and Pillow. Install Pillow if needed with `python3 -m pip install --user -r CardImporter/requirements.txt`.
+Supported image formats are PNG and JPEG. The importer recognizes screenshots locally with Apple Vision, uses the templates in `CardImporter/templates/`, and requires Python 3, Swift, and Pillow. Install Pillow with:
 
-The importer does not call remote services. It reads the current `app/cards.json` and writes converted previews to `assets/memories/`.
+```sh
+python3 -m pip install --user -r CardImporter/requirements.txt
+```
 
-## Image quality and safety
-
-The preview is cropped from the same measured 153×153 area used by the recognition prototype, scaled to the screenshot's actual resolution. It is not resized down or up. The crop is saved as WebP at quality 95 (the old helper used quality 85 and a 600 px downscale).
-
-Each file is validated and recognized before changes are made. JSON is replaced atomically. If saving the JSON fails, the new WebP is removed. A source screenshot is deleted only after its card and image have been saved successfully.
+The tool does not make network requests. Successfully processed screenshots are cropped into WebP without upscaling and saved at quality 95.

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { cards, cardImageUrl } from './catalog';
 import { characterNames, copy } from './i18n';
@@ -58,6 +58,8 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
     chevron: <path d="m9 18 6-6-6-6"/>,
     filter: <><path d="M4 5h16M7 12h10m-7 7h4"/><circle cx="8" cy="5" r="1.5" fill="var(--surface)"/><circle cx="15" cy="12" r="1.5" fill="var(--surface)"/><circle cx="11" cy="19" r="1.5" fill="var(--surface)"/></>,
     check: <path d="m5 12 4 4L19 6"/>,
+    copy: <><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></>,
+    loader: <circle cx="12" cy="12" r="9" strokeDasharray="42 16"/>,
     arrow: <><path d="M7 7h10v10"/><path d="m17 7-10 10"/></>,
     myth: <><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></>,
     swap: <><path d="m16 3 4 4-4 4M4 7h16M8 21l-4-4 4-4m12 4H4"/></>,
@@ -151,7 +153,7 @@ function TierRow({ tier, index, total, cardsById, groupMyths, reorderId, dropTar
     <div className={`tier-label ${darkLabel ? 'tier-label--dark' : ''}`} style={{ '--tier-color': tier.color } as CSSProperties}>
       {editing ? <textarea autoFocus className="tier-name-input" aria-label={t.renameTier} maxLength={70} rows={1} value={draft}
         onChange={(event) => { setDraft(event.target.value); event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`; }}
-        onFocus={(event) => { event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`; }}
+        onFocus={(event) => { event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`; const end = event.currentTarget.value.length; event.currentTarget.setSelectionRange(end, end); }}
         onBlur={() => { onRename(tier.id, draft.trim() || tier.name); setEditing(false); }}
         onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.blur(); } if (event.key === 'Escape') { setDraft(tier.name); event.currentTarget.blur(); } }} />
         : <button className="tier-name" type="button" onClick={() => setEditing(true)} aria-label={t.renameTier}>{tier.name}</button>}
@@ -205,8 +207,11 @@ export function App() {
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const [incomingRanking, setIncomingRanking] = useState<SharedRanking | null>(null);
   const [shareLink, setShareLink] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopyFailed, setShareCopyFailed] = useState(false);
   const [poolDockVisible, setPoolDockVisible] = useState(false);
   const [poolDockExpanded, setPoolDockExpanded] = useState(false);
+  const [poolGridHeight, setPoolGridHeight] = useState<number | null>(null);
   const [dragPreview, setDragPreview] = useState<{ card: Card; pairCount: number; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
   const dragPreviewElementRef = useRef<HTMLElement | null>(null);
   const dragPreviewOffsetRef = useRef<{ x: number; y: number } | null>(null);
@@ -214,6 +219,9 @@ export function App() {
   const dragSourceRemovedRef = useRef(false);
   const [dragSourceRemoved, setDragSourceRemoved] = useState(false);
   const poolGridRef = useRef<HTMLDivElement | null>(null);
+  const shareCopyButtonRef = useRef<HTMLButtonElement | null>(null);
+  const shareCopyTimerRef = useRef<number | null>(null);
+  const pendingPoolGridAnimationRef = useRef(false);
   const [tierInsertionBoundary, setTierInsertionBoundary] = useState<number | null>(null);
   const pointerRef = useRef<string | null>(null);
   const tierPressRef = useRef<{ id: string; pointerId: number } | null>(null);
@@ -316,10 +324,21 @@ export function App() {
   }, [incomingRanking]);
   useEffect(() => {
     if (!shareLink) return;
-    const input = shareLinkInputRef.current;
-    input?.focus();
-    input?.select();
+    shareCopyButtonRef.current?.focus();
   }, [shareLink]);
+  useLayoutEffect(() => {
+    if (!pendingPoolGridAnimationRef.current) return;
+    pendingPoolGridAnimationRef.current = false;
+    const grid = poolGridRef.current;
+    if (!grid) return;
+    const targetHeight = grid.scrollHeight;
+    const frame = window.requestAnimationFrame(() => setPoolGridHeight(targetHeight));
+    const timer = window.setTimeout(() => setPoolGridHeight(null), 320);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [state.characters, state.rarities, state.types]);
   useEffect(() => {
     if (!selected) return;
     const previousFocus = document.activeElement as HTMLElement | null;
@@ -332,13 +351,16 @@ export function App() {
       right: body.style.right,
       width: body.style.width,
       overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight,
     };
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     body.style.position = 'fixed';
     body.style.top = `-${scrollY}px`;
     body.style.left = '0';
     body.style.right = '0';
     body.style.width = '100%';
     body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
     const closeButton = document.querySelector<HTMLElement>('.modal-close');
     closeButton?.focus();
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -359,6 +381,7 @@ export function App() {
       body.style.right = previousBodyStyles.right;
       body.style.width = previousBodyStyles.width;
       body.style.overflow = previousBodyStyles.overflow;
+      body.style.paddingRight = previousBodyStyles.paddingRight;
       window.scrollTo(0, scrollY);
       previousFocus?.focus();
     };
@@ -415,18 +438,24 @@ export function App() {
       }
       if (!pointerRef.current) return;
       const origin = dragOriginBoundsRef.current;
-      if (origin && !dragSourceRemovedRef.current && (event.clientX < origin.left || event.clientX > origin.right || event.clientY < origin.top || event.clientY > origin.bottom)) {
+      const previewOffset = dragPreviewOffsetRef.current;
+      const dropX = origin && previewOffset ? event.clientX - previewOffset.x + origin.width / 2 : event.clientX;
+      const dropY = origin && previewOffset ? event.clientY - previewOffset.y + origin.height / 2 : event.clientY;
+      if (origin && !dragSourceRemovedRef.current && (dropX < origin.left || dropX > origin.right || dropY < origin.top || dropY > origin.bottom)) {
         dragSourceRemovedRef.current = true;
         setDragSourceRemoved(true);
       }
-      const previewOffset = dragPreviewOffsetRef.current;
       if (previewOffset && dragPreviewElementRef.current) {
         dragPreviewElementRef.current.style.transform = `translate3d(${event.clientX - previewOffset.x}px, ${event.clientY - previewOffset.y}px, 0)`;
       }
-      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-drop-zone]');
+      if (!dragSourceRemovedRef.current) {
+        dispatch({ type: 'drag-state', id: pointerRef.current });
+        return;
+      }
+      const target = document.elementFromPoint(dropX, dropY)?.closest<HTMLElement>('[data-drop-zone]');
       if (target) {
         const targetId = target.dataset.dropZone!;
-        const position = cardDropPosition(target, event.clientX, event.clientY);
+        const position = cardDropPosition(target, dropX, dropY);
         const draggedCard = [...document.querySelectorAll<HTMLElement>('[data-card-id]')]
           .find((item) => item.dataset.cardId === pointerRef.current);
         const sourceZone = draggedCard?.dataset.cardZone;
@@ -444,13 +473,17 @@ export function App() {
     const handlePointerUp = (event: PointerEvent) => {
       clearTierPress(event, true);
       const draggedId = pointerRef.current;
-      if (draggedId) {
-        const target = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-drop-zone]');
+      if (draggedId && dragSourceRemovedRef.current) {
+        const origin = dragOriginBoundsRef.current;
+        const offset = dragPreviewOffsetRef.current;
+        const dropX = origin && offset ? event.clientX - offset.x + origin.width / 2 : event.clientX;
+        const dropY = origin && offset ? event.clientY - offset.y + origin.height / 2 : event.clientY;
+        const target = document.elementFromPoint(dropX, dropY)?.closest<HTMLElement>('[data-drop-zone]');
         if (target) {
-          const position = cardDropPosition(target, event.clientX, event.clientY);
+          const position = cardDropPosition(target, dropX, dropY);
           dispatch({ type: 'move-card', id: draggedId, zone: target.dataset.dropZone!, index: position.index });
         } else dispatch({ type: 'drag-state', id: null });
-      }
+      } else if (draggedId) dispatch({ type: 'drag-state', id: null });
       pointerRef.current = null;
       setDragPreview(null);
       dragPreviewElementRef.current = null;
@@ -558,11 +591,11 @@ export function App() {
       const width = 1140;
       const padding = 24;
       const labelWidth = 160;
-      const actionRailWidth = 34;
       const labelTextWidth = labelWidth - 22;
       const cardSize = 80;
       const gap = 4;
-      const contentWidth = width - padding * 2 - labelWidth - actionRailWidth - 16;
+      const contentInset = 6;
+      const contentWidth = width - padding * 2 - labelWidth - contentInset;
       const columns = Math.max(1, Math.floor((contentWidth + gap) / (cardSize + gap)));
       const unitsByTier = new Map(state.tiers.map((tier) => [tier.id, cardDisplayUnits(tier.cards, cardsById, state.mythGrouping)]));
       const measureCanvas = document.createElement('canvas');
@@ -629,7 +662,7 @@ export function App() {
         lines.forEach((line, lineIndex) => context.fillText(line, textX, textY + lineIndex * exportLineHeight));
         (unitsByTier.get(tier.id) ?? []).forEach((unit, index) => {
           const image = loadedImages.get(unit.card.id); if (!image) return;
-          const x = padding + labelWidth + 8 + (index % columns) * (cardSize + gap);
+          const x = padding + labelWidth + contentInset + (index % columns) * (cardSize + gap);
           const imageY = y + Math.floor(index / columns) * (cardSize + gap);
           if (unit.members.length > 1) {
             context.fillStyle = dark ? '#34373d' : '#dfe1dc';
@@ -637,7 +670,14 @@ export function App() {
             context.strokeStyle = dark ? 'rgba(255,255,255,.35)' : 'rgba(28,32,29,.2)';
             context.strokeRect(x + 3.5, imageY + 3.5, cardSize - 1, cardSize - 1);
           }
-          context.drawImage(image, x, imageY, cardSize, cardSize);
+          context.save();
+          context.beginPath();
+          context.rect(x, imageY, cardSize, cardSize);
+          context.clip();
+          const scaledCardSize = cardSize * 1.06;
+          const scaleOffset = (scaledCardSize - cardSize) / 2;
+          context.drawImage(image, x - scaleOffset, imageY - scaleOffset + .5, scaledCardSize, scaledCardSize);
+          context.restore();
         });
         y += tierHeight + rowGap;
       });
@@ -677,20 +717,9 @@ export function App() {
       dispatch({ type: 'notice', value: error instanceof Error && error.message === 'Share link is too long' ? t.shareTooLong : t.shareCreateError });
       return;
     }
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'CardRank', url });
-        return;
-      } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') return;
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      dispatch({ type: 'notice', value: t.shareCopied });
-    } catch {
-      setShareLink(url);
-    }
+    setShareCopied(false);
+    setShareCopyFailed(false);
+    setShareLink(url);
   };
 
   const acceptIncomingRanking = () => {
@@ -707,18 +736,35 @@ export function App() {
     clearSharedRankFragment();
   };
 
-  const copyFallbackShareLink = async () => {
+  const copyShareLink = async () => {
     if (!shareLink) return;
     try {
       await navigator.clipboard.writeText(shareLink);
-      setShareLink(null);
-      dispatch({ type: 'notice', value: t.shareCopied });
     } catch {
-      shareLinkInputRef.current?.select();
+      const input = shareLinkInputRef.current;
+      input?.focus();
+      input?.select();
+      if (!document.execCommand('copy')) {
+        setShareCopyFailed(true);
+        return;
+      }
     }
+    setShareCopyFailed(false);
+    setShareCopied(true);
+    if (shareCopyTimerRef.current !== null) window.clearTimeout(shareCopyTimerRef.current);
+    shareCopyTimerRef.current = window.setTimeout(() => setShareCopied(false), 1600);
+  };
+
+  const preparePoolGridFilterAnimation = () => {
+    const grid = poolGridRef.current;
+    const nearPageBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 3;
+    if (!grid || !nearPageBottom) return;
+    pendingPoolGridAnimationRef.current = true;
+    setPoolGridHeight(grid.getBoundingClientRect().height);
   };
 
   const toggleFilter = (action: 'toggle-character' | 'toggle-rarity' | 'toggle-card-type', value: string | number) => {
+    preparePoolGridFilterAnimation();
     if (action === 'toggle-character') dispatch({ type: action, value: String(value) });
     else if (action === 'toggle-rarity') dispatch({ type: action, value: Number(value) });
     else dispatch({ type: action, value: String(value) });
@@ -746,7 +792,7 @@ export function App() {
     <section className="ranking-section" aria-label={state.language === 'ru' ? 'Рейтинговые уровни' : 'Ranking tiers'}>
       <div className="section-head">
         <div className="section-primary-actions">
-          <button className="primary-button export-button" type="button" onClick={exportPng} disabled={exporting}><Icon name="download" size={16}/><span>{exporting ? '…' : t.export}</span></button>
+          <button className="primary-button export-button" type="button" onClick={exportPng} disabled={exporting} aria-label={exporting ? t.exporting : t.export}>{exporting ? <span className="export-spinner"><Icon name="loader" size={16}/></span> : <Icon name="download" size={16}/>}<span>{t.export}</span></button>
           <button className="icon-button share-button" type="button" onClick={shareRanking} aria-label={t.share} title={t.share}><Icon name="share" size={17}/></button>
         </div>
         <div className="section-management-actions">
@@ -778,11 +824,12 @@ export function App() {
       <div className="sort-controls">
         <div className="segmented-control" role="group" aria-label={state.language === 'ru' ? 'Сортировка' : 'Sorting'}>
           <button type="button" className={state.sortMode === 'date-character' ? 'is-selected' : ''} onClick={() => dispatch({ type: 'sort', mode: 'date-character', direction: state.dateDirection })}>{t.sortDate}</button>
+          <button type="button" className={state.sortMode === 'rarity-date' ? 'is-selected' : ''} disabled={state.rarities.length === 1} onClick={() => dispatch({ type: 'sort', mode: 'rarity-date', direction: state.dateDirection })}>{t.sortRarity}</button>
           <button type="button" className={state.sortMode === 'character-date' ? 'is-selected' : ''} disabled={state.characters.length === 1} onClick={() => dispatch({ type: 'sort', mode: 'character-date', direction: state.dateDirection })}>{t.sortCharacter}</button>
         </div>
         <button type="button" className="date-direction" onClick={() => dispatch({ type: 'sort', mode: state.sortMode, direction: state.dateDirection === 'asc' ? 'desc' : 'asc' })} aria-label={state.dateDirection === 'asc' ? t.newest : t.oldest} title={state.dateDirection === 'asc' ? t.newest : t.oldest}><span className={state.dateDirection === 'desc' ? 'direction-up' : ''}>↓</span>{state.dateDirection === 'asc' ? t.oldest : t.newest}</button>
       </div>
-      <div ref={poolGridRef} className={`pool-grid drop-zone ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length} aria-hidden={poolDockVisible || undefined}>
+      <div ref={poolGridRef} style={poolGridHeight === null ? undefined : { height: `${poolGridHeight}px` }} onTransitionEnd={(event) => { if (event.propertyName === 'height') setPoolGridHeight(null); }} className={`pool-grid drop-zone ${poolGridHeight !== null ? 'pool-grid--animating' : ''} ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length} aria-hidden={poolDockVisible || undefined}>
         {renderPoolCards()}
       </div>
     </section>
@@ -888,10 +935,15 @@ export function App() {
     }}>
       <section className="confirm-dialog share-link-dialog" role="dialog" aria-modal="true" aria-labelledby="share-link-title">
         <h2 id="share-link-title">{t.shareLink}</h2>
-        <input ref={shareLinkInputRef} className="share-link-input" type="url" readOnly value={shareLink} onFocus={(event) => event.currentTarget.select()} />
+        <div className="share-link-row">
+          <input ref={shareLinkInputRef} className="share-link-input" type="url" readOnly value={shareLink} onFocus={(event) => event.currentTarget.select()} aria-label={t.shareLink}/>
+          <button ref={shareCopyButtonRef} className="share-copy-button" type="button" onClick={copyShareLink} aria-label={shareCopied ? t.shareCopied : t.copyLink} title={shareCopied ? undefined : t.copyLink}>
+            <Icon name={shareCopied ? 'check' : 'copy'} size={18}/>
+          </button>
+        </div>
+        {shareCopyFailed && <p className="share-copy-error" role="status">{t.shareCopyFailed}</p>}
         <div className="confirm-actions">
           <button className="confirm-keep" type="button" onClick={() => setShareLink(null)}>{t.close}</button>
-          <button className="confirm-share" type="button" onClick={copyFallbackShareLink}>{t.copyLink}</button>
         </div>
       </section>
     </div>}

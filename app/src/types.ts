@@ -25,5 +25,5 @@ export interface Tier {
   cards: string[];
 }
 
-export type SortMode = 'date-character' | 'character-date';
+export type SortMode = 'date-character' | 'character-date' | 'rarity-date';
 export type Language = 'ru' | 'en';

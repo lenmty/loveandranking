@@ -47,7 +47,9 @@ export function sortCards(ids: string[], catalog: Card[], mode: SortMode, direct
     const rarity = right.rarity - left.rarity;
     const type = (left.type === 'solar' ? 0 : 1) - (right.type === 'solar' ? 0 : 1);
     const name = left.name.localeCompare(right.name, undefined, { sensitivity: 'base' });
-    return mode === 'date-character' ? (date || character || rarity || type || name) : (character || date || rarity || type || name);
+    if (mode === 'character-date') return character || date || rarity || type || name;
+    if (mode === 'rarity-date') return rarity || date || character || type || name;
+    return date || character || rarity || type || name;
   });
 }
 
@@ -153,7 +155,17 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
     }
     case 'toggle-rarity': {
       const active = state.rarities.includes(action.value);
-      return { ...state, rarities: active ? state.rarities.filter((value) => value !== action.value) : [...state.rarities, action.value] };
+      const rarities = active ? state.rarities.filter((value) => value !== action.value) : [...state.rarities, action.value];
+      if (rarities.length === 1 && state.sortMode === 'rarity-date') {
+        return {
+          ...state,
+          rarities,
+          sortMode: 'date-character',
+          pool: sortCards(state.pool, catalog, 'date-character', state.dateDirection),
+          poolManuallyOrdered: false,
+        };
+      }
+      return { ...state, rarities };
     }
     case 'toggle-card-type': {
       const active = state.types.includes(action.value);

@@ -1,4 +1,4 @@
-import cardsJson from '../../CardImporter/standalone/output/cards.json';
+import cardsJson from '../cards.json';
 import type { Card, Myth } from './types';
 
 type ImportedCard = Omit<Card, 'myth'> & {

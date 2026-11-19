@@ -1,11 +1,7 @@
 .DS_Store
 app/node_modules/
 app/dist/
-CardImporter/incoming/
+CardImporter/incoming/*
+!CardImporter/incoming/.gitkeep
 CardImporter/test/
-CardImporter/standalone/incoming/*
-!CardImporter/standalone/incoming/.gitkeep
-CardImporter/standalone/output/cards.json
-CardImporter/standalone/output/images/*
-!CardImporter/standalone/output/images/.gitkeep
-CardImporter/standalone/output/reports/
+CardImporter/reports/
