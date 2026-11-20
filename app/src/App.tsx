@@ -11,8 +11,8 @@ import type { Card, Language, Tier } from './types';
 import type { SharedRanking } from './sharing';
 
 const characters = ['Xavier', 'Zayne', 'Rafayel', 'Sylus', 'Caleb'] as const;
-type Confirmation = { type: 'delete-tier'; id: string } | { type: 'return-all' } | { type: 'full-reset' };
-const tierLabelUsesLightText = (color: string) => ['#44474c', '#45484d'].includes(color.toLowerCase());
+type Confirmation = { type: 'delete-tier' | 'clear-tier'; id: string } | { type: 'return-all' } | { type: 'full-reset' };
+const tierLabelUsesLightText = (color: string) => ['#44474c', '#45484d', '#45557b'].includes(color.toLowerCase());
 const exportFont = '700 14px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
 const exportLineHeight = 16.8;
 
@@ -53,7 +53,11 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
     sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></>,
     moon: <path d="M20.8 14.1A8.7 8.7 0 0 1 9.9 3.2 8.8 8.8 0 1 0 20.8 14.1Z"/>,
     grip: <><circle cx="9" cy="6" r=".7" fill="currentColor"/><circle cx="15" cy="6" r=".7" fill="currentColor"/><circle cx="9" cy="12" r=".7" fill="currentColor"/><circle cx="15" cy="12" r=".7" fill="currentColor"/><circle cx="9" cy="18" r=".7" fill="currentColor"/><circle cx="15" cy="18" r=".7" fill="currentColor"/></>,
+    'arrow-up': <><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></>,
+    'arrow-down': <><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></>,
+    settings: <><path d="M10 2.8h4l.5 2.1 1.7 1 1.9-1.1 2 3.5-1.7 1.4v2l1.7 1.4-2 3.5-1.9-1.1-1.7 1-.5 2.1h-4l-.5-2.1-1.7-1-1.9 1.1-2-3.5 1.7-1.4v-2L3.9 8.3l2-3.5 1.9 1.1 1.7-1L10 2.8Z"/><circle cx="12" cy="11.2" r="2.6"/></>,
     trash: <><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/></>,
+    brush: <><rect x="8" y="2.5" width="8" height="8" rx="3"/><path d="M10 4.5h4v2.7l-2 1.8-2-1.8z"/><path d="m8.5 11-1.5 3h10l-1.5-3M7 14h10"/><path d="M8 14v3m2-3v4m2-4v4m2-4v4m2-4v3"/></>,
     close: <><path d="m6 6 12 12M18 6 6 18"/></>,
     chevron: <path d="m9 18 6-6-6-6"/>,
     filter: <><path d="M4 5h16M7 12h10m-7 7h4"/><circle cx="8" cy="5" r="1.5" fill="var(--surface)"/><circle cx="15" cy="12" r="1.5" fill="var(--surface)"/><circle cx="11" cy="19" r="1.5" fill="var(--surface)"/></>,
@@ -133,23 +137,38 @@ function cardDropPosition(container: HTMLElement, clientX: number, clientY: numb
   return { index: Number(last.dataset.cardIndex) + Number(last.dataset.cardSpan ?? 1), anchorId: last.dataset.cardId ?? null, after: true };
 }
 
-function TierRow({ tier, index, total, cardsById, groupMyths, reorderId, dropTarget, draggingId, dragSourceRemoved, t, language, onRename, onColor, onDelete, onTierPointerDown, onMove, onOpen, onDragStart }: {
+function TierRow({ tier, index, total, cardsById, groupMyths, reorderId, dropTarget, draggingId, dragSourceRemoved, t, language, onRename, onColor, onDelete, onClear, onCreate, onTierPointerDown, onMove, onOpen, onDragStart }: {
   tier: Tier; index: number; total: number; cardsById: Map<string, Card>; reorderId: string | null;
   groupMyths: boolean;
   dropTarget: AppState['dropTarget']; draggingId: string | null; dragSourceRemoved: boolean;
   t: Record<string, string>; language: Language; onRename: (id: string, name: string) => void;
   onColor: (id: string, color: string) => void; onDelete: (id: string) => void;
+  onClear: (id: string) => void; onCreate: (index: number) => void;
   onTierPointerDown: (id: string, event: PointerEvent, handle: HTMLButtonElement) => void;
   onMove: (id: string, zone: string, index: number) => void; onOpen: (id: string) => void;
   onDragStart: (id: string, event: PointerEvent) => void;
 }) {
   const [editing, setEditing] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [colorOpen, setColorOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [moveMenuOpen, setMoveMenuOpen] = useState(false);
   const [draft, setDraft] = useState(tier.name);
+  const actionsRef = useRef<HTMLDivElement | null>(null);
+  const gripStartRef = useRef<{ x: number; y: number; moved: boolean } | null>(null);
   useEffect(() => { setDraft(tier.name); }, [tier.name]);
   const tierCards = cardDisplayUnits(tier.cards, cardsById, groupMyths);
+  useEffect(() => {
+    if (!colorOpen && !settingsOpen && !moveMenuOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !actionsRef.current?.contains(event.target)) {
+        setColorOpen(false); setSettingsOpen(false); setMoveMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', closeOutside);
+    return () => document.removeEventListener('pointerdown', closeOutside);
+  }, [colorOpen, settingsOpen, moveMenuOpen]);
   const darkLabel = tierLabelUsesLightText(tier.color);
-  return <section className={`tier-row ${reorderId === tier.id ? 'tier-row--moving' : ''}`} data-tier-index={index}>
+  return <section className={`tier-row ${reorderId === tier.id ? 'tier-row--moving' : ''}`} data-tier-index={index} data-tier-id={tier.id}>
     <div className={`tier-label ${darkLabel ? 'tier-label--dark' : ''}`} style={{ '--tier-color': tier.color } as CSSProperties}>
       {editing ? <textarea autoFocus className="tier-name-input" aria-label={t.renameTier} maxLength={70} rows={1} value={draft}
         onChange={(event) => { setDraft(event.target.value); event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`; }}
@@ -166,18 +185,37 @@ function TierRow({ tier, index, total, cardsById, groupMyths, reorderId, dropTar
       </Fragment>)}
       {dropTarget?.zone === tier.id && dropTarget.anchorId === null && <CardInsertionSlot tier/>}
     </div>
-    <div className="tier-actions" style={{ '--tier-color': tier.color } as CSSProperties}>
+    <div className="tier-actions" style={{ '--tier-color': tier.color } as CSSProperties} ref={actionsRef}>
+      <div className="tier-action-slot">
         <button className="icon-button tier-grip-rail" type="button" aria-label={t.moveTier} title={t.moveTier}
           aria-pressed={reorderId === tier.id}
-          onPointerDown={(event) => { event.preventDefault(); onTierPointerDown(tier.id, event.nativeEvent, event.currentTarget); }}
+          onPointerDown={(event) => { gripStartRef.current = { x: event.clientX, y: event.clientY, moved: false }; onTierPointerDown(tier.id, event.nativeEvent, event.currentTarget); }}
+          onPointerMove={(event) => { const start = gripStartRef.current; if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5) start.moved = true; }}
+          onPointerCancel={() => { gripStartRef.current = null; }}
+          onClick={() => { const start = gripStartRef.current; gripStartRef.current = null; if (start?.moved) return; setMoveMenuOpen((open) => !open); setColorOpen(false); setSettingsOpen(false); }}
           onKeyDown={(event) => {
             if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
             event.preventDefault();
             onMove(tier.id, 'tier-order', Math.max(0, Math.min(total - 1, index + (event.key === 'ArrowUp' ? -1 : 1))));
           }}><Icon name="grip" size={17}/></button>
-        <button className="icon-button tier-menu-trigger" type="button" aria-label={t.changeColor} title={t.changeColor} onClick={() => setMenuOpen(!menuOpen)}><span className="color-dot"/></button>
-        {total > 1 && <button className="icon-button tier-delete" type="button" aria-label={t.deleteTier} title={t.deleteTier} onClick={() => onDelete(tier.id)}><Icon name="trash" size={15}/></button>}
-      {menuOpen && <div className="palette-popover" role="group" aria-label={t.changeColor}>{tierPalette.map((color) => <button key={color} type="button" className={`palette-swatch ${color === tier.color ? 'is-selected' : ''}`} style={{ background: color }} aria-label={color} onClick={() => { onColor(tier.id, color); setMenuOpen(false); }}/>)}</div>}
+        {moveMenuOpen && <div className="tier-move-popover" role="group" aria-label={t.moveTier}>
+          <button className="icon-button" type="button" disabled={index === 0} aria-label={t.moveTierUp} title={t.moveTierUp} onClick={() => { onMove(tier.id, 'tier-order', index - 1); setMoveMenuOpen(false); }}><Icon name="arrow-up" size={16}/></button>
+          <button className="icon-button" type="button" disabled={index === total - 1} aria-label={t.moveTierDown} title={t.moveTierDown} onClick={() => { onMove(tier.id, 'tier-order', index + 1); setMoveMenuOpen(false); }}><Icon name="arrow-down" size={16}/></button>
+        </div>}
+      </div>
+      <div className="tier-action-slot">
+        <button className="icon-button tier-menu-trigger" type="button" aria-label={t.changeColor} title={t.changeColor} aria-expanded={colorOpen} onClick={() => { setColorOpen(!colorOpen); setMoveMenuOpen(false); setSettingsOpen(false); }}><span className="color-dot"/></button>
+        {colorOpen && <div className="palette-popover" role="group" aria-label={t.changeColor}>{tierPalette.map((color) => <button key={color} type="button" className={`palette-swatch ${color === tier.color ? 'is-selected' : ''}`} style={{ background: color }} aria-label={color} onClick={() => { onColor(tier.id, color); setColorOpen(false); }}/>)}</div>}
+      </div>
+      <div className="tier-action-slot">
+        <button className="icon-button tier-settings-trigger" type="button" aria-label={t.tierSettings} title={t.tierSettings} aria-expanded={settingsOpen} onClick={() => { setSettingsOpen(!settingsOpen); setColorOpen(false); setMoveMenuOpen(false); }}><Icon name="settings" size={16}/></button>
+        {settingsOpen && <div className="tier-settings-popover" role="group" aria-label={t.tierSettings}>
+          <button type="button" disabled={total >= 10} onClick={() => { onCreate(index); setSettingsOpen(false); }}><Icon name="plus" size={15}/>{t.createTierAbove}</button>
+          <button type="button" disabled={total >= 10} onClick={() => { onCreate(index + 1); setSettingsOpen(false); }}><Icon name="plus" size={15}/>{t.createTierBelow}</button>
+          <button type="button" disabled={tier.cards.length === 0} onClick={() => { onClear(tier.id); setSettingsOpen(false); }}><span className="brush-icon" aria-hidden="true"/>{t.clearTier}</button>
+          <button type="button" disabled={total <= 1} onClick={() => { onDelete(tier.id); setSettingsOpen(false); }}><Icon name="trash" size={15}/>{t.deleteTier}</button>
+        </div>}
+      </div>
     </div>
   </section>;
 }
@@ -229,6 +267,7 @@ export function App() {
   const shareCopyTimerRef = useRef<number | null>(null);
   const pendingPoolGridAnimationRef = useRef(false);
   const [tierInsertionBoundary, setTierInsertionBoundary] = useState<number | null>(null);
+  const pendingTierScrollRef = useRef<string | null>(null);
   const pointerRef = useRef<string | null>(null);
   const tierPressRef = useRef<{ id: string; pointerId: number } | null>(null);
   const tierInsertionRef = useRef<number | null>(null);
@@ -240,6 +279,17 @@ export function App() {
   const dispatch = dispatchBase;
   const t = copy[state.language];
   const cardsById = useMemo(() => new Map(cards.map((card) => [card.id, card])), []);
+
+  useLayoutEffect(() => {
+    const tierId = pendingTierScrollRef.current;
+    if (!tierId) return;
+    pendingTierScrollRef.current = null;
+    requestAnimationFrame(() => {
+      const row = [...document.querySelectorAll<HTMLElement>('[data-tier-id]')]
+        .find((element) => element.dataset.tierId === tierId);
+      row?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  }, [state.tiers]);
   const poolUnits = useMemo(() => cardDisplayUnits(state.pool, cardsById, state.mythGrouping), [state.pool, cardsById, state.mythGrouping]);
   const visiblePool = useMemo(() => {
     const query = state.search.trim().toLocaleLowerCase();
@@ -258,14 +308,18 @@ export function App() {
   const selectedPack = selected && state.mythGrouping && selected.myth
     ? (selectedTier?.cards ?? state.pool).filter((id) => cardsById.get(id)?.myth?.id === selected.myth?.id).map((id) => cardsById.get(id)!)
     : selected ? [selected] : [];
-  const pendingDeleteTier = confirmation?.type === 'delete-tier'
+  const pendingTierAction = confirmation?.type === 'delete-tier' || confirmation?.type === 'clear-tier'
     ? state.tiers.find((tier) => tier.id === confirmation.id)
     : undefined;
   const confirmationTitle = confirmation?.type === 'delete-tier'
-    ? t.deleteTierQuestion.replace('{name}', pendingDeleteTier?.name ?? '')
+    ? t.deleteTierQuestion.replace('{name}', pendingTierAction?.name ?? '')
+    : confirmation?.type === 'clear-tier'
+      ? t.clearTierQuestion.replace('{name}', pendingTierAction?.name ?? '')
     : confirmation?.type === 'return-all' ? t.returnAllQuestion : confirmation?.type === 'full-reset' ? t.fullResetQuestion : '';
   const confirmationDescription = confirmation?.type === 'delete-tier'
-    ? pendingDeleteTier?.cards.length ? t.deleteTierHasCards : null
+    ? pendingTierAction?.cards.length ? t.deleteTierHasCards : null
+    : confirmation?.type === 'clear-tier'
+      ? pendingTierAction?.cards.length ? t.clearTierHasCards : null
     : confirmation?.type === 'return-all' ? t.returnAllMessage : confirmation?.type === 'full-reset' ? t.fullResetMessage : null;
 
   useEffect(() => {
@@ -404,7 +458,7 @@ export function App() {
       document.removeEventListener('keydown', closeOnEscape);
       previousFocus?.focus();
     };
-  }, [confirmation?.type, confirmation?.type === 'delete-tier' ? confirmation.id : null]);
+  }, [confirmation?.type, confirmation && 'id' in confirmation ? confirmation.id : null]);
   useEffect(() => {
     const findTierBoundary = (clientY: number): number | null => {
       const list = document.querySelector<HTMLElement>('.tier-list');
@@ -620,9 +674,11 @@ export function App() {
       onRename={(id, name) => dispatch({ type: 'rename-tier', id, name })}
       onColor={(id, color) => dispatch({ type: 'color-tier', id, color })}
       onDelete={(id) => setConfirmation({ type: 'delete-tier', id })}
+      onClear={(id) => setConfirmation({ type: 'clear-tier', id })}
+      onCreate={(insertIndex) => dispatch({ type: 'insert-tier', index: insertIndex })}
       onTierPointerDown={beginTierPointer}
       onMove={(id, zone, targetIndex) => zone === 'tier-order'
-        ? dispatch({ type: 'move-tier', from: state.tiers.findIndex((item) => item.id === id), to: targetIndex })
+        ? (pendingTierScrollRef.current = id, dispatch({ type: 'move-tier', from: state.tiers.findIndex((item) => item.id === id), to: targetIndex }))
         : handleCardDrop(id, zone, targetIndex)}
       onOpen={(id) => dispatch({ type: 'open-card', id })}
       onDragStart={beginCardDrag}
@@ -950,7 +1006,7 @@ export function App() {
         </div>
       </section>
     </div>}
-    {confirmation && (confirmation.type !== 'delete-tier' || pendingDeleteTier) && <div className="confirm-backdrop" role="presentation" onClick={(event) => {
+    {confirmation && (!('id' in confirmation) || pendingTierAction) && <div className="confirm-backdrop" role="presentation" onClick={(event) => {
       event.stopPropagation();
       if (event.target === event.currentTarget) setConfirmation(null);
     }}>
@@ -967,11 +1023,12 @@ export function App() {
         <div className="confirm-actions">
           <button className="confirm-keep confirm-secondary" type="button" onClick={() => setConfirmation(null)}>{t.keepTier}</button>
           <button className="confirm-delete" type="button" onClick={() => {
-            if (confirmation.type === 'delete-tier' && pendingDeleteTier) dispatch({ type: 'delete-tier', id: pendingDeleteTier.id });
+            if (confirmation.type === 'delete-tier' && pendingTierAction) dispatch({ type: 'delete-tier', id: pendingTierAction.id });
+            else if (confirmation.type === 'clear-tier' && pendingTierAction) dispatch({ type: 'clear-tier', id: pendingTierAction.id });
             else if (confirmation.type === 'return-all') dispatch({ type: 'return-all-cards' });
             else if (confirmation.type === 'full-reset') dispatch({ type: 'reset-ranking' });
             setConfirmation(null);
-          }}>{confirmation.type === 'delete-tier' ? t.confirmDelete : confirmation.type === 'return-all' ? t.returnAllButton : t.fullResetConfirm}</button>
+          }}>{confirmation.type === 'delete-tier' ? t.confirmDelete : confirmation.type === 'clear-tier' ? t.clearTier : confirmation.type === 'return-all' ? t.returnAllButton : t.fullResetConfirm}</button>
         </div>
       </section>
     </div>}

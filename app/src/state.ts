@@ -2,8 +2,9 @@ import type { Card, SortMode, Tier } from './types';
 
 export const characterOrder = ['Xavier', 'Zayne', 'Rafayel', 'Sylus', 'Caleb'];
 export const tierPalette = [
-  '#f3a2a8', '#f3c38f', '#f4dc8b', '#a8cba9', '#a7c7e7', '#c8b3de',
-  '#e9a7c5', '#c5d7a4', '#d7d7d2', '#b9bec5', '#45484d', '#80b8b1',
+  '#f3a2a8', '#f3c38f', '#f4dc8b', '#c5d7a4', '#a8cba9', '#80b8b1',
+  '#a7c7e7', '#c8b3de', '#e9a7c5', '#d7d7d2', '#b9bec5', '#45484d',
+  '#45557b', '#7f8bb2', '#a8a4c4', '#f5e9e1', '#d9c19d', '#a18676',
 ];
 
 export const initialTiers: Tier[] = [
@@ -126,6 +127,8 @@ export type Action =
   | { type: 'rename-tier'; id: string; name: string }
   | { type: 'color-tier'; id: string; color: string }
   | { type: 'add-tier' }
+  | { type: 'insert-tier'; index: number }
+  | { type: 'clear-tier'; id: string }
   | { type: 'delete-tier'; id: string }
   | { type: 'return-all-cards' }
   | { type: 'reset-ranking' }
@@ -199,6 +202,21 @@ export function reducer(state: AppState, action: Action, catalog: Card[]): AppSt
       if (state.tiers.length >= 10) return state;
       const index = state.tiers.length;
       return { ...state, tiers: [...state.tiers, { id: `tier-${Date.now()}`, name: `Tier ${index + 1}`, color: tierPalette[index % tierPalette.length], cards: [] }] };
+    }
+    case 'insert-tier': {
+      if (state.tiers.length >= 10) return state;
+      const index = Math.max(0, Math.min(state.tiers.length, action.index));
+      const tiers = [...state.tiers];
+      tiers.splice(index, 0, { id: `tier-${Date.now()}`, name: `Tier ${state.tiers.length + 1}`, color: tierPalette[index % tierPalette.length], cards: [] });
+      return { ...state, tiers };
+    }
+    case 'clear-tier': {
+      const tier = state.tiers.find((item) => item.id === action.id);
+      if (!tier || tier.cards.length === 0) return state;
+      const pool = state.poolManuallyOrdered
+        ? [...tier.cards, ...state.pool]
+        : sortCards([...state.pool, ...tier.cards], catalog, state.sortMode, state.dateDirection);
+      return { ...state, pool, tiers: state.tiers.map((item) => item.id === action.id ? { ...item, cards: [] } : item) };
     }
     case 'delete-tier': {
       if (state.tiers.length <= 1) return state;

@@ -89,11 +89,22 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .tier-label--dark .color-dot { border-color: rgba(255,255,255,.75); }
 .tier-grip-rail { width: 26px; height: 26px; cursor: grab; touch-action: none; }
 .tier-grip-rail:active { cursor: grabbing; }
-.tier-actions { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 80px; }
+.tier-actions { position: relative; z-index: 10; display: grid; grid-template-rows: repeat(3, 25px); align-content: center; justify-items: center; gap: 1px; width: 100%; height: 100%; min-height: 80px; }
+.tier-action-slot { position: relative; display: grid; place-items: center; width: 100%; height: 25px; }
 .tier-actions .icon-button { width: 26px; height: 25px; color: var(--muted); }
-.tier-actions .icon-button:hover { color: var(--text); background: var(--surface-soft); }
+.tier-actions .icon-button:hover:not(:disabled) { color: var(--text); background: var(--surface-soft); }
+.tier-actions .icon-button:disabled { opacity: .3; cursor: default; }
 .color-dot { width: 12px; height: 12px; border: 2px solid color-mix(in srgb, var(--tier-color) 78%, var(--text)); border-radius: 50%; background: var(--tier-color); }
-.palette-popover { position: absolute; z-index: 20; top: 0; right: calc(100% + 5px); display: grid; grid-template-columns: repeat(5, 22px); gap: 7px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); box-shadow: var(--shadow); }
+.palette-popover, .tier-settings-popover, .tier-move-popover { position: absolute; z-index: 20; top: 0; right: calc(100% + 5px); border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); box-shadow: var(--shadow); }
+.tier-move-popover { top: 50%; display: flex; align-items: center; gap: 10px; padding: 8px; transform: translateY(-50%); }
+.tier-actions .tier-move-popover .icon-button { width: 28px; height: 28px; }
+.tier-move-popover svg { width: 15px; height: 15px; }
+.palette-popover { display: grid; grid-template-columns: repeat(6, 22px); gap: 7px; padding: 10px; }
+.tier-settings-popover { display: grid; width: max-content; min-width: 190px; gap: 2px; padding: 6px; }
+.tier-settings-popover button { display: flex; align-items: center; gap: 9px; min-height: 34px; padding: 0 9px; border: 0; border-radius: 7px; background: transparent; color: var(--text); font-size: 12px; text-align: left; cursor: pointer; }
+.brush-icon { display: block; width: 16px; height: 16px; flex: 0 0 16px; background: currentColor; -webkit-mask: url('./assets/brush.png') center / contain no-repeat; mask: url('./assets/brush.png') center / contain no-repeat; }
+.tier-settings-popover button:hover:not(:disabled) { background: var(--surface-soft); }
+.tier-settings-popover button:disabled { opacity: .42; cursor: default; }
 .palette-swatch { width: 22px; height: 22px; padding: 0; border: 2px solid transparent; border-radius: 7px; cursor: pointer; }
 .palette-swatch.is-selected { outline: 2px solid var(--accent); outline-offset: 2px; }
 .tier-content { position: relative; display: flex; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 4px; min-width: 0; min-height: 80px; padding: 0 8px; border-radius: 0; transition: background .15s ease; }
@@ -252,10 +263,12 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   .tier-row { --tier-card-size: clamp(62px, calc(33.333vw - 59px), 76px); grid-template-columns: 112px minmax(0, 1fr) 26px; min-height: var(--tier-card-size); border-radius: 12px; }
   .tier-label { padding: 5px 6px; border-radius: 11px 0 0 11px; }
   .tier-name, .tier-name-input { min-height: 30px; font-size: 16px; }
-  .tier-actions { position: absolute; top: 50%; right: 0; min-height: 0; gap: 0; transform: translateY(-50%); }
+  .tier-actions { position: relative; display: grid; grid-column: 3; grid-row: 1; width: 26px; height: 100%; min-height: 69px; grid-template-rows: repeat(3, 23px); align-content: center; justify-items: center; gap: 0; }
+  .tier-action-slot { width: 100%; height: 23px; }
   .tier-grip-rail { width: 24px; height: 24px; }
   .tier-actions .icon-button { width: 24px; height: 23px; }
-  .tier-content { gap: 2px; min-height: var(--tier-card-size); padding: 0 2px; }
+  .tier-action-slot > .icon-button { transform: translateX(-3px); }
+  .tier-content { grid-column: 2; grid-row: 1; gap: 2px; min-height: var(--tier-card-size); padding: 0 2px; }
   .card-tile, .card-image-button, .card-image, .card-insertion-slot { width: 76px; height: 76px; }
   .card-tile { flex-basis: 76px; }
   .card-insertion-slot { flex-basis: 76px; }
