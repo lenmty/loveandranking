@@ -58,11 +58,11 @@ export function createInitialState(catalog: Card[]): AppState {
   const language = typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en';
   return {
     tiers: initialTiers.map((tier) => ({ ...tier, cards: [...tier.cards] })),
-    pool: sortCards(catalog.map((card) => card.id), catalog, 'date-character', 'asc'),
+    pool: sortCards(catalog.map((card) => card.id), catalog, 'date-character', 'desc'),
     poolManuallyOrdered: false,
     mythGrouping: false,
-    sortMode: 'date-character', dateDirection: 'asc',
-    characters: [...characterOrder], rarities: [4, 5], types: ['solar'], search: '',
+    sortMode: 'date-character', dateDirection: 'desc',
+    characters: [...characterOrder], rarities: [5], types: ['lunar'], search: '',
     theme, language, themePreference: 'system', languagePreference: 'system', selectedCard: null, dragging: null,
     dropTarget: null, tierReorderId: null, notice: null,
   };

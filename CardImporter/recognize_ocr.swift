@@ -30,6 +30,7 @@ for path in CommandLine.arguments.dropFirst() {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["en-US"]
+        request.customWords = ["Xavier", "Zayne", "Rafayel", "Caleb", "Sylus"]
         request.usesLanguageCorrection = true
         request.minimumTextHeight = 0.01
         try VNImageRequestHandler(cgImage: image, options: [:]).perform([request])

@@ -61,7 +61,7 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
     copy: <><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></>,
     loader: <circle cx="12" cy="12" r="9" strokeDasharray="42 16"/>,
     arrow: <><path d="M7 7h10v10"/><path d="m17 7-10 10"/></>,
-    myth: <><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></>,
+    myth: <><rect x="8" y="8" width="12" height="12"/><path d="M16 8V6H6v10h2"/></>,
     swap: <><path d="m16 3 4 4-4 4M4 7h16M8 21l-4-4 4-4m12 4H4"/></>,
   };
   return <svg {...common}>{shapes[name] ?? null}</svg>;
@@ -194,7 +194,7 @@ function CardTile({ card, pairCount = 1, displaySpan = 1, language, index, zone,
   return <article className={`card-tile ${zone === 'pool' ? 'card-tile--pool' : 'card-tile--tier'} ${pairCount > 1 ? 'card-tile--myth-stack' : ''} ${isDragging ? 'card-tile--dragging' : ''} ${dragSourceRemoved ? 'card-tile--dragging-away' : ''}`} data-card-id={card.id} data-card-index={index} data-card-span={displaySpan} data-card-zone={zone}>
     {pairCount > 1 && <span className="myth-stack-layers" aria-hidden="true"><i/><i/></span>}
     <button className="card-image-button" type="button" onClick={() => onOpen(card.id)} aria-label={`${labelForCharacter(card, language)} — ${card.name}`}>
-      <img className="card-image" src={cardImageUrl(card.image)} alt={`${labelForCharacter(card, language)} — ${card.name}`} loading="lazy" draggable={false}/>
+            <img className="card-image" src={cardImageUrl(card.image)} alt={`${labelForCharacter(card, language)} — ${card.name}`} loading="lazy" draggable={false} onContextMenu={(event) => event.preventDefault()}/>
     </button>
     <button className="card-drag-handle" type="button" aria-label={language === 'ru' ? 'Перетащить карточку' : 'Drag memory'} title={language === 'ru' ? 'Перетащить' : 'Drag'}
       onPointerDown={(event) => { event.preventDefault(); onDragStart(card.id, event.nativeEvent); }}><Icon name="grip" size={14}/></button>
@@ -590,11 +590,11 @@ export function App() {
     try {
       const width = 1140;
       const padding = 24;
-      const labelWidth = 160;
+      const labelWidth = 157;
       const labelTextWidth = labelWidth - 22;
       const cardSize = 80;
       const gap = 4;
-      const contentInset = 6;
+      const contentInset = 3;
       const contentWidth = width - padding * 2 - labelWidth - contentInset;
       const columns = Math.max(1, Math.floor((contentWidth + gap) / (cardSize + gap)));
       const unitsByTier = new Map(state.tiers.map((tier) => [tier.id, cardDisplayUnits(tier.cards, cardsById, state.mythGrouping)]));
@@ -612,6 +612,14 @@ export function App() {
       };
       const rowGap = 10;
       const height = padding * 2 + state.tiers.reduce((sum, tier) => sum + tierHeightOf(tier), 0) + Math.max(0, state.tiers.length - 1) * rowGap;
+      const exportSiteUrl = new URL(window.location.href);
+      exportSiteUrl.search = '';
+      exportSiteUrl.hash = '';
+      if (exportSiteUrl.pathname.endsWith('/index.html')) {
+        exportSiteUrl.pathname = exportSiteUrl.pathname.slice(0, -'index.html'.length);
+      }
+      if (!exportSiteUrl.pathname.endsWith('/')) exportSiteUrl.pathname += '/';
+      const exportCredit = `${state.language === 'ru' ? 'Рейтинг воспоминаний Love and Deepspace · LoveAndRanking' : 'Love and Deepspace memory ranking · LoveAndRanking'} · ${exportSiteUrl.host}${exportSiteUrl.pathname}`;
       const canvas = document.createElement('canvas');
       canvas.width = width; canvas.height = height;
       const context = canvas.getContext('2d');
@@ -681,13 +689,21 @@ export function App() {
         });
         y += tierHeight + rowGap;
       });
+      context.save();
+      context.globalAlpha = .76;
+      context.fillStyle = dark ? '#a0a49f' : '#858982';
+      context.font = '12px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+      context.textAlign = 'right';
+      context.textBaseline = 'middle';
+      context.fillText(exportCredit, width - padding, height - padding / 2);
+      context.restore();
       const png = await new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('PNG export failed')), 'image/png'));
-      const file = new File([png], 'cardrank.png', { type: 'image/png' });
+      const file = new File([png], 'loveandranking.png', { type: 'image/png' });
       const isIOS = /iPad|iPhone|iPod/u.test(navigator.userAgent)
         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       if (isIOS && navigator.share && navigator.canShare?.({ files: [file] })) {
         try {
-          await navigator.share({ files: [file], title: 'CardRank' });
+          await navigator.share({ files: [file], title: 'LoveAndRanking' });
           return;
         } catch (error) {
           if (error instanceof Error && error.name === 'AbortError') return;
@@ -695,7 +711,7 @@ export function App() {
       }
       const fileUrl = URL.createObjectURL(png);
       const link = document.createElement('a');
-      link.download = 'cardrank.png';
+      link.download = 'loveandranking.png';
       link.href = fileUrl;
       document.body.append(link);
       link.click();
@@ -782,7 +798,7 @@ export function App() {
 
   return <main className="app-shell">
     <header className="topbar">
-      <a className="brand" href={`${window.location.pathname}${window.location.search}`} aria-label="CardRank"><span><strong>{t.title}</strong><small>{t.subtitle}</small></span></a>
+      <a className="brand" href={`${window.location.pathname}${window.location.search}`} aria-label="LoveAndRanking"><span><strong>{t.title}</strong><small>{t.subtitle}</small></span></a>
       <div className="top-actions">
         <button className="icon-button language-toggle" type="button" aria-label={t.language} title={t.language} onClick={() => dispatch({ type: 'toggle-language' })}>{state.language === 'ru' ? 'EN' : 'RU'}</button>
         <button className="icon-button" type="button" aria-label={state.theme === 'light' ? t.themeDark : t.themeLight} title={state.theme === 'light' ? t.themeDark : t.themeLight} onClick={() => dispatch({ type: 'toggle-theme' })}><Icon name={state.theme === 'light' ? 'moon' : 'sun'}/></button>
@@ -834,6 +850,11 @@ export function App() {
       </div>
     </section>
 
+    <footer className="site-footer">
+      <p>Made by <a href="https://t.me/catdoge" target="_blank" rel="noreferrer">@CatDoge</a> — feel free to message me!</p>
+      <p>More from me: <a href="https://catdoge.notion.site/LaDs-2b9f93ac8a10803f985be67ab9a9c4a9" target="_blank" rel="noreferrer">LaDS Content Timeline</a> <span aria-hidden="true">↗</span></p>
+    </footer>
+
     <aside className={`mobile-pool-dock ${poolDockVisible ? 'mobile-pool-dock--visible' : ''} ${poolDockExpanded ? 'mobile-pool-dock--expanded' : ''}`} aria-label={t.pool} aria-hidden={!poolDockVisible}>
       <button className="mobile-pool-dock-toggle" type="button" aria-expanded={poolDockExpanded}
         aria-label={poolDockExpanded ? (state.language === 'ru' ? 'Свернуть общую стопку' : 'Collapse memory pool') : (state.language === 'ru' ? 'Развернуть общую стопку' : 'Expand memory pool')}
@@ -873,11 +894,13 @@ export function App() {
         }}>
         <button className="modal-close icon-button" type="button" aria-label={t.close} onClick={() => dispatch({ type: 'open-card', id: null })}><Icon name="close"/></button>
         <div className={`modal-memory-previews ${selectedPack.length > 1 ? 'modal-memory-previews--pair' : ''}`}>
-          {selectedPack.length > 1 && <div className="modal-myth-title"><Icon name="myth" size={15}/><strong>{selected.myth?.name}</strong></div>}
+          {selectedPack.length > 1 && <div className="modal-myth-title"><strong>{selected.myth?.name}</strong></div>}
           {selectedPack.map((memory) => <div className="modal-card-preview" key={memory.id}>
-            <img src={cardImageUrl(memory.image)} alt={`${labelForCharacter(memory, state.language)} — ${memory.name}`}/>
-            <div className="modal-card-meta"><span>{labelForCharacter(memory, state.language)}</span><strong>{memory.name}</strong><small>{memory.rarity}★ <span>·</span> {t[memory.type]}</small></div>
-            {selectedPack.length === 1 && memory.myth && <div className="modal-myth-link"><Icon name="myth" size={14}/><span>{memory.myth.name}</span></div>}
+            <img src={cardImageUrl(memory.image)} alt={`${labelForCharacter(memory, state.language)} — ${memory.name}`} draggable={false} onContextMenu={(event) => event.preventDefault()}/>
+            <div className="modal-card-meta"><span>{labelForCharacter(memory, state.language)}</span><strong>{memory.name}</strong><small>{memory.rarity}★ <span>·</span> {t[memory.type]}</small>
+              {selectedPack.length === 1 && memory.myth && <div className="modal-myth-link modal-myth-link--mobile"><span>{memory.myth.name}</span></div>}
+            </div>
+            {selectedPack.length === 1 && memory.myth && <div className="modal-myth-link modal-myth-link--desktop"><span>{memory.myth.name}</span></div>}
           </div>)}
           {selectedPack.length > 1 && <button className="myth-order-button" type="button" title={t.swapMythOrder} aria-label={t.swapMythOrder} onClick={() => dispatch({ type: 'swap-myth-order', id: selected.id })}><Icon name="swap" size={16}/></button>}
         </div>

@@ -1120,5 +1120,2889 @@
     "type": "lunar",
     "releaseDate": "2025-12-31",
     "image": "sylus_grasped_dominion_4_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_f5ffc5",
+    "name": "Wish Granted",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-03-01",
+    "image": "rafayel_wish_granted_3_lunar_2024-03-01.webp"
+  },
+  {
+    "id": "card_367fc3",
+    "name": "Boundless Seas",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-03-01",
+    "image": "rafayel_boundless_seas_5_lunar_2025-03-01.webp"
+  },
+  {
+    "id": "card_97fad6",
+    "name": "Swimming Hearts",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-03-01",
+    "image": "rafayel_swimming_hearts_3_lunar_2025-03-01.webp"
+  },
+  {
+    "id": "card_c7614f",
+    "name": "Duskbright Steps",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-03-01",
+    "image": "rafayel_duskbright_steps_5_lunar_2026-03-01.webp"
+  },
+  {
+    "id": "card_f4dec0",
+    "name": "Bloom Gaze",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2026-03-01",
+    "image": "rafayel_bloom_gaze_3_lunar_2026-03-01.webp"
+  },
+  {
+    "id": "card_cf7f68",
+    "name": "Vesperine Glimmer",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-02-02",
+    "image": "rafayel_vesperine_glimmer_4_lunar_2026-02-02.webp"
+  },
+  {
+    "id": "card_76a88a",
+    "name": "Sapphire Dream",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-04-03",
+    "image": "rafayel_sapphire_dream_4_solar_2024-04-03.webp"
+  },
+  {
+    "id": "card_6555f7",
+    "name": "Sapphire Scar",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-04-03",
+    "image": "rafayel_sapphire_scar_4_solar_2024-04-03.webp"
+  },
+  {
+    "id": "card_c2dee9",
+    "name": "Dawn's Melody",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-04-03",
+    "image": "rafayel_dawns_melody_3_lunar_2024-04-03.webp"
+  },
+  {
+    "id": "card_9268da",
+    "name": "Temple's Sunset",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-04-03",
+    "image": "rafayel_temples_sunset_5_solar_2024-04-03_pair1.webp",
+    "mythName": "Forgotten Sea",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_62302c",
+    "name": "Temple's Promise",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-04-03",
+    "image": "rafayel_temples_promise_5_solar_2024-04-03_pair2.webp",
+    "mythName": "Forgotten Sea",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_cb817c",
+    "name": "Destined Dawntide",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-07-03",
+    "image": "rafayel_destined_dawntide_5_lunar_2025-07-03.webp"
+  },
+  {
+    "id": "card_9e7ca4",
+    "name": "Tipsy Invitation",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-02-05",
+    "image": "rafayel_tipsy_invitation_5_lunar_2024-02-05.webp"
+  },
+  {
+    "id": "card_b4e8b2",
+    "name": "Transparent Ocean",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-08-05",
+    "image": "rafayel_transparent_ocean_4_lunar_2025-08-05.webp"
+  },
+  {
+    "id": "card_a39eae",
+    "name": "Banquet Ablaze",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-05-06",
+    "image": "rafayel_banquet_ablaze_4_lunar_2025-05-06.webp"
+  },
+  {
+    "id": "card_ea129a",
+    "name": "Seething Flames",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-11-08",
+    "image": "rafayel_seething_flames_5_lunar_2024-11-08.webp"
+  },
+  {
+    "id": "card_cdadcd",
+    "name": "Extreme Dose",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-02-10",
+    "image": "rafayel_extreme_dose_5_lunar_2025-02-10.webp"
+  },
+  {
+    "id": "card_efbf38",
+    "name": "Carved Gemheart",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-02-10",
+    "image": "rafayel_carved_gemheart_5_lunar_2026-02-10.webp"
+  },
+  {
+    "id": "card_6bf1cc",
+    "name": "Into The Canvas",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-10",
+    "image": "rafayel_into_the_canvas_5_lunar_2024-09-10.webp"
+  },
+  {
+    "id": "card_eec4dd",
+    "name": "Whispers",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-03-11",
+    "image": "rafayel_whispers_5_lunar_2024-03-11.webp"
+  },
+  {
+    "id": "card_4f171a",
+    "name": "Heatwave Torrent",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-08-12",
+    "image": "rafayel_heatwave_torrent_5_lunar_2025-08-12.webp"
+  },
+  {
+    "id": "card_3b948b",
+    "name": "Tailwag Moment",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-11-12",
+    "image": "rafayel_tailwag_moment_5_lunar_2024-11-12.webp"
+  },
+  {
+    "id": "card_941f4b",
+    "name": "Scarlet Invitation",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-11-12",
+    "image": "rafayel_scarlet_invitation_4_lunar_2024-11-12.webp"
+  },
+  {
+    "id": "card_00ddb9",
+    "name": "Tipsy",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-07-15",
+    "image": "rafayel_tipsy_4_lunar_2024-07-15.webp"
+  },
+  {
+    "id": "card_54315d",
+    "name": "Tidefall Allure",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-06-17",
+    "image": "rafayel_tidefall_allure_4_solar_2025-06-17.webp"
+  },
+  {
+    "id": "card_42757d",
+    "name": "Tidefall Waves",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-06-17",
+    "image": "rafayel_tidefall_waves_4_solar_2025-06-17.webp"
+  },
+  {
+    "id": "card_7ca4fc",
+    "name": "Distant Prayer",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-06-17",
+    "image": "rafayel_distant_prayer_3_lunar_2025-06-17.webp"
+  },
+  {
+    "id": "card_8e7065",
+    "name": "Mistsea Descent",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-06-17",
+    "image": "rafayel_mistsea_descent_5_solar_2025-06-17_pair1.webp",
+    "mythName": "Tears of Romirro",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_fb7d59",
+    "name": "Mistsea Lament",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-06-17",
+    "image": "rafayel_mistsea_lament_5_solar_2025-06-17_pair2.webp",
+    "mythName": "Tears of Romirro",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_7a6fea",
+    "name": "Sunset on Canvas",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-06-17",
+    "image": "rafayel_sunset_on_canvas_5_lunar_2026-06-17.webp"
+  },
+  {
+    "id": "card_1e2eca",
+    "name": "Skyflame Expanse",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_skyflame_expanse_4_solar_2026-08-17.webp"
+  },
+  {
+    "id": "card_1c49d1",
+    "name": "Skyflame Reach",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_skyflame_reach_4_solar_2026-08-17.webp"
+  },
+  {
+    "id": "card_e1d923",
+    "name": "Autumn Caress",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_autumn_caress_3_lunar_2026-08-17.webp"
+  },
+  {
+    "id": "card_f97a13",
+    "name": "Masked Radiance",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_masked_radiance_5_solar_2026-08-17_pair1.webp",
+    "mythName": "A Thought Across",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_a39125",
+    "name": "Masked Dissolution",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2026-08-17",
+    "image": "rafayel_masked_dissolution_5_solar_2026-08-17_pair2.webp",
+    "mythName": "A Thought Across",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_a16b62",
+    "name": "Blossoms",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_blossoms_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_051b1d",
+    "name": "Your Fragrance",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_your_fragrance_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_26da14",
+    "name": "Before Sunrise",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_before_sunrise_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_1c2bfd",
+    "name": "Heartfelt Moment",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_heartfelt_moment_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_af7523",
+    "name": "Radiant Heart",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_radiant_heart_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_74c495",
+    "name": "Heartfelt Game",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_heartfelt_game_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_00ec83",
+    "name": "Rainbow Strokes",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_rainbow_strokes_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_6e7047",
+    "name": "Daybreak's Touch",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_daybreaks_touch_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_7f6155",
+    "name": "Radiant Halo",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_radiant_halo_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_96a7b4",
+    "name": "Entwined",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_entwined_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_ddc573",
+    "name": "Hidden Shadow",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_hidden_shadow_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_96aaac",
+    "name": "Journey Seeker",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_journey_seeker_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f5d2d4",
+    "name": "Oceanic Nightfall",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_oceanic_nightfall_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4703da",
+    "name": "When Light Falls",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_when_light_falls_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_54bd7e",
+    "name": "Ocean At Night",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_ocean_at_night_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_bfe849",
+    "name": "Myths",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_myths_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_19ed2c",
+    "name": "Afternoon Arelight",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_afternoon_arelight_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_3eb9cf",
+    "name": "Whalefall Lament",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_whalefall_lament_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_45b176",
+    "name": "Scorching Rain",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_scorching_rain_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_632825",
+    "name": "Fragrant Dream",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_fragrant_dream_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_be488e",
+    "name": "Dangerously Close",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_dangerously_close_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_9f99ad",
+    "name": "Homecoming Sonata",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_homecoming_sonata_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_22f49e",
+    "name": "Flowery Words",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_flowery_words_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4cffe3",
+    "name": "Ivory Nightfall",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_ivory_nightfall_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b8decf",
+    "name": "Oceanside Exchange",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_oceanside_exchange_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_fe387e",
+    "name": "Come With Me",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_come_with_me_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_232455",
+    "name": "Inspiration Search",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_inspiration_search_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f24277",
+    "name": "Lame Party",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_lame_party_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_d12ba2",
+    "name": "Not Angry",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_not_angry_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_be3dd5",
+    "name": "Perfect Smile",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_perfect_smile_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_129601",
+    "name": "Troubled",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_troubled_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_68e23b",
+    "name": "Quick Sketch",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_quick_sketch_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_e3c167",
+    "name": "Thinking",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_thinking_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_baab76",
+    "name": "Backlight",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_backlight_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_65dee4",
+    "name": "Whatcha Doing",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_whatcha_doing_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b74cc1",
+    "name": "Social Occasion",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_social_occasion_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_8ae420",
+    "name": "Secret",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_secret_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_abbcc4",
+    "name": "Left on Read",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_left_on_read_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_5820e9",
+    "name": "Trump Card",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_trump_card_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_0432af",
+    "name": "Take Care Of Me",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_take_care_of_me_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4e1d1d",
+    "name": "Do Not Disturb",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_do_not_disturb_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_c0e62b",
+    "name": "In Your Eyes",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_in_your_eyes_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_dae723",
+    "name": "Deep Sea Riches",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_deep_sea_riches_5_solar_2024-01-18_pair1.webp",
+    "mythName": "Sea Of Golden Sand",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_28a5cf",
+    "name": "Deep Sea Promise",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_deep_sea_promise_5_solar_2024-01-18_pair2.webp",
+    "mythName": "Sea Of Golden Sand",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_d8dcac",
+    "name": "Rising Tides",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-03-19",
+    "image": "rafayel_rising_tides_5_lunar_2026-03-19.webp"
+  },
+  {
+    "id": "card_b53332",
+    "name": "Lost In Your Eyes",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-04-19",
+    "image": "rafayel_lost_in_your_eyes_4_lunar_2024-04-19.webp"
+  },
+  {
+    "id": "card_5c1b6d",
+    "name": "Glistening Hearts",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-10-20",
+    "image": "rafayel_glistening_hearts_4_lunar_2024-10-20.webp"
+  },
+  {
+    "id": "card_a55cb4",
+    "name": "Fiery Undercurrents",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-02-21",
+    "image": "rafayel_fiery_undercurrents_4_solar_2024-02-21.webp"
+  },
+  {
+    "id": "card_10e478",
+    "name": "Sweet Overdrive",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-11-21",
+    "image": "rafayel_sweet_overdrive_5_lunar_2025-11-21.webp"
+  },
+  {
+    "id": "card_a7af2d",
+    "name": "Love's Silhouette",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-01-22",
+    "image": "rafayel_loves_silhouette_4_lunar_2025-01-22.webp"
+  },
+  {
+    "id": "card_7b4d08",
+    "name": "Alluring Hues",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-09-22",
+    "image": "rafayel_alluring_hues_5_lunar_2026-09-22.webp"
+  },
+  {
+    "id": "card_61b386",
+    "name": "Gem Affection",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-23",
+    "image": "rafayel_gem_affection_5_lunar_2024-09-23.webp"
+  },
+  {
+    "id": "card_828c00",
+    "name": "Sunny Swing",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-08-24",
+    "image": "rafayel_sunny_swing_4_lunar_2026-08-24.webp"
+  },
+  {
+    "id": "card_838fb7",
+    "name": "Floral Promise",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-06-25",
+    "image": "rafayel_floral_promise_5_lunar_2024-06-25.webp"
+  },
+  {
+    "id": "card_4fa872",
+    "name": "Fireworks Vow",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-27",
+    "image": "rafayel_fireworks_vow_5_lunar_2024-01-27.webp"
+  },
+  {
+    "id": "card_538fe2",
+    "name": "Nightly Overflow",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-10-27",
+    "image": "rafayel_nightly_overflow_5_lunar_2026-10-27.webp"
+  },
+  {
+    "id": "card_d01df1",
+    "name": "Private Trip",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-05-28",
+    "image": "rafayel_private_trip_5_lunar_2024-05-28.webp"
+  },
+  {
+    "id": "card_5ad147",
+    "name": "Sparkling Traces",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-07-29",
+    "image": "rafayel_sparkling_traces_5_lunar_2024-07-29.webp"
+  },
+  {
+    "id": "card_008830",
+    "name": "Ignited Echoes",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-10-29",
+    "image": "rafayel_ignited_echoes_5_lunar_2025-10-29.webp"
+  },
+  {
+    "id": "card_f4a175",
+    "name": "Sunlit Raindrops",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-10-29",
+    "image": "rafayel_sunlit_raindrops_4_lunar_2025-10-29.webp"
+  },
+  {
+    "id": "card_3801e2",
+    "name": "Wisteria Waltz",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-04-30",
+    "image": "rafayel_wisteria_waltz_5_lunar_2025-04-30.webp"
+  },
+  {
+    "id": "card_0fabd2",
+    "name": "Rippling Blossoms",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-04-30",
+    "image": "rafayel_rippling_blossoms_5_lunar_2026-04-30.webp"
+  },
+  {
+    "id": "card_e11a3c",
+    "name": "Trueheart Flip",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-04-30",
+    "image": "rafayel_trueheart_flip_4_lunar_2026-04-30.webp"
+  },
+  {
+    "id": "card_784b5c",
+    "name": "Intertidal Zone",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "rafayel_intertidal_zone_5_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_75a7bf",
+    "name": "Promised Wildfire",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "rafayel_promised_wildfire_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_5a47da",
+    "name": "Hearty Knock",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "rafayel_hearty_knock_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_ce985c",
+    "name": "Fires of Devotion",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "rafayel_fires_of_devotion_5_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_202561",
+    "name": "Eventide Recitative",
+    "character": "Rafayel",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "rafayel_eventide_recitative_4_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_8f48eb",
+    "name": "Synced Drowning",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "rafayel_synced_drowning_5_lunar_2026-11-06.webp"
+  },
+  {
+    "id": "card_06c764",
+    "name": "Cherished Moment",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "rafayel_cherished_moment_3_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_e04b82",
+    "name": "Unforgettable Adventure",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-03-01",
+    "image": "rafayel_unforgettable_adventure_5_lunar_2024-03-01.webp"
+  },
+  {
+    "id": "card_60916d",
+    "name": "Omnipotent Perception",
+    "character": "Rafayel",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "rafayel_omnipotent_perception_5_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_ddd8f3",
+    "name": "A Break",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_a_break_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_2e42bf",
+    "name": "Program Fallacy",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "xavier_program_fallacy_5_lunar_2026-11-06.webp"
+  },
+  {
+    "id": "card_4b7c79",
+    "name": "Lingering Light",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-10-11",
+    "image": "xavier_lingering_light_5_lunar_2026-10-11.webp"
+  },
+  {
+    "id": "card_a5104d",
+    "name": "Bound by Starlight",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-09-22",
+    "image": "xavier_bound_by_starlight_5_lunar_2026-09-22.webp"
+  },
+  {
+    "id": "card_d781f9",
+    "name": "Runaway Hearts",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-06-17",
+    "image": "xavier_runaway_hearts_5_lunar_2026-06-17.webp"
+  },
+  {
+    "id": "card_de3a39",
+    "name": "Sunken Glow",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-04-30",
+    "image": "xavier_sunken_glow_5_lunar_2026-04-30.webp"
+  },
+  {
+    "id": "card_11288b",
+    "name": "Tranquil Moments",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-03-09",
+    "image": "xavier_tranquil_moments_5_lunar_2026-03-09.webp"
+  },
+  {
+    "id": "card_b8b624",
+    "name": "Blades with Blossoms",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-02-10",
+    "image": "xavier_blades_with_blossoms_5_lunar_2026-02-10.webp"
+  },
+  {
+    "id": "card_0883d4",
+    "name": "Eulogy of Light",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "xavier_eulogy_of_light_5_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_09f5bd",
+    "name": "Precious Moment",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-12-18",
+    "image": "xavier_precious_moment_5_lunar_2025-12-18.webp"
+  },
+  {
+    "id": "card_6637e7",
+    "name": "Offbeat Track",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-10-29",
+    "image": "xavier_offbeat_track_5_lunar_2025-10-29.webp"
+  },
+  {
+    "id": "card_d91d2f",
+    "name": "Between Stars",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-10-11",
+    "image": "xavier_between_stars_5_lunar_2025-10-11.webp"
+  },
+  {
+    "id": "card_cb4bd4",
+    "name": "Coolsplash Soak",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-08-12",
+    "image": "xavier_coolsplash_soak_5_lunar_2025-08-12.webp"
+  },
+  {
+    "id": "card_a701c9",
+    "name": "Starfall Sanctuary",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-07-03",
+    "image": "xavier_starfall_sanctuary_5_lunar_2025-07-03.webp"
+  },
+  {
+    "id": "card_9e2950",
+    "name": "Feverish Attempts",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-05-29",
+    "image": "xavier_feverish_attempts_5_lunar_2025-05-29.webp"
+  },
+  {
+    "id": "card_511aad",
+    "name": "Inflorescence Imprints",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-04-30",
+    "image": "xavier_inflorescence_imprints_5_lunar_2025-04-30.webp"
+  },
+  {
+    "id": "card_c1bf82",
+    "name": "Deluded Fiction",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-02-10",
+    "image": "xavier_deluded_fiction_5_lunar_2025-02-10.webp"
+  },
+  {
+    "id": "card_76e3f5",
+    "name": "Misty Silhouette",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "xavier_misty_silhouette_5_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_8b1b8e",
+    "name": "Silvery Polyphony",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-18",
+    "image": "xavier_silvery_polyphony_5_lunar_2024-12-18.webp"
+  },
+  {
+    "id": "card_3dc161",
+    "name": "Outcast's Voyage",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-07",
+    "image": "xavier_outcasts_voyage_5_lunar_2024-12-07.webp"
+  },
+  {
+    "id": "card_e83e66",
+    "name": "Floof Attack",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-11-12",
+    "image": "xavier_floof_attack_5_lunar_2024-11-12.webp"
+  },
+  {
+    "id": "card_f13ef9",
+    "name": "Celestial Message",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-10-11",
+    "image": "xavier_celestial_message_5_lunar_2024-10-11.webp"
+  },
+  {
+    "id": "card_ca907f",
+    "name": "Floral Blessing",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-23",
+    "image": "xavier_floral_blessing_5_lunar_2024-09-23.webp"
+  },
+  {
+    "id": "card_546b11",
+    "name": "No Restraint",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "xavier_no_restraint_5_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_8bb322",
+    "name": "21 Days",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-06-25",
+    "image": "xavier_21_days_5_lunar_2024-06-25.webp"
+  },
+  {
+    "id": "card_f9fb74",
+    "name": "Faint Sensation",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-04-19",
+    "image": "xavier_faint_sensation_5_lunar_2024-04-19.webp"
+  },
+  {
+    "id": "card_09d48c",
+    "name": "Tender Night",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-02-05",
+    "image": "xavier_tender_night_5_lunar_2024-02-05.webp"
+  },
+  {
+    "id": "card_45c7ea",
+    "name": "Unique Aftertaste",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-03-20",
+    "image": "xavier_unique_aftertaste_5_lunar_2024-03-20.webp"
+  },
+  {
+    "id": "card_7db129",
+    "name": "Romantic Afternoon",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-03-11",
+    "image": "xavier_romantic_afternoon_5_lunar_2024-03-11.webp"
+  },
+  {
+    "id": "card_0fea60",
+    "name": "Precious Bonfire",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_precious_bonfire_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_d267f1",
+    "name": "Fluffy Trap",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_fluffy_trap_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_1f09d2",
+    "name": "Fragment Of Time",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_fragment_of_time_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_be1935",
+    "name": "Heartstring Symphony",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_heartstring_symphony_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_03c7f8",
+    "name": "Gilded Dreams",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-07-25",
+    "image": "xavier_gilded_dreams_4_solar_2025-07-25.webp"
+  },
+  {
+    "id": "card_58fe49",
+    "name": "Gilded Mirage",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-07-25",
+    "image": "xavier_gilded_mirage_4_solar_2025-07-25.webp"
+  },
+  {
+    "id": "card_82e12c",
+    "name": "Veiled Guardian",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-05-13",
+    "image": "xavier_veiled_guardian_4_solar_2024-05-13.webp"
+  },
+  {
+    "id": "card_fd1a5c",
+    "name": "Veiled Starlight",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-05-13",
+    "image": "xavier_veiled_starlight_4_solar_2024-05-13.webp"
+  },
+  {
+    "id": "card_f5fdf3",
+    "name": "Heartfelt Code",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_heartfelt_code_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_0a8165",
+    "name": "Heartfelt Guide",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_heartfelt_guide_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4b08da",
+    "name": "Shining Traces",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_shining_traces_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_002d43",
+    "name": "Shining Light",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_shining_light_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f6a547",
+    "name": "Moment's Respite",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_moments_respite_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4a7d62",
+    "name": "An Appointment",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_an_appointment_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_2afa91",
+    "name": "Starry Witness",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-02-21",
+    "image": "xavier_starry_witness_4_solar_2024-02-21.webp"
+  },
+  {
+    "id": "card_0de292",
+    "name": "Favored Exception",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-10-21",
+    "image": "xavier_favored_exception_4_lunar_2026-10-21.webp"
+  },
+  {
+    "id": "card_223127",
+    "name": "Beachside Victory",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-06-27",
+    "image": "xavier_beachside_victory_4_lunar_2026-06-27.webp"
+  },
+  {
+    "id": "card_97a0aa",
+    "name": "Moments Refined",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-05-31",
+    "image": "xavier_moments_refined_4_lunar_2026-05-31.webp"
+  },
+  {
+    "id": "card_f8ca1b",
+    "name": "Celestial Yearn",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "xavier_celestial_yearn_4_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_c54979",
+    "name": "Firelit Embrace",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "xavier_firelit_embrace_4_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_43e3c4",
+    "name": "Nocturnal Hunt",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-07-03",
+    "image": "xavier_nocturnal_hunt_4_lunar_2025-07-03.webp"
+  },
+  {
+    "id": "card_29b32c",
+    "name": "Horizon's Pulse",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-05-06",
+    "image": "xavier_horizons_pulse_4_lunar_2025-05-06.webp"
+  },
+  {
+    "id": "card_21f362",
+    "name": "Sweetness Pursuit",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-03-09",
+    "image": "xavier_sweetness_pursuit_4_lunar_2025-03-09.webp"
+  },
+  {
+    "id": "card_4060f6",
+    "name": "Twofold Heartbeat",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-01-22",
+    "image": "xavier_twofold_heartbeat_4_lunar_2025-01-22.webp"
+  },
+  {
+    "id": "card_0fe1f5",
+    "name": "Unreturned Traveler",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "xavier_unreturned_traveler_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_c4fea4",
+    "name": "Love Syndrome",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-01-10",
+    "image": "xavier_love_syndrome_4_lunar_2025-01-10.webp"
+  },
+  {
+    "id": "card_e676e9",
+    "name": "Planned Crush",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "xavier_planned_crush_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_78bf95",
+    "name": "Seeker Of Light",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-11-20",
+    "image": "xavier_seeker_of_light_4_lunar_2024-11-20.webp"
+  },
+  {
+    "id": "card_1ccc86",
+    "name": "Winter's Sun",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-09-14",
+    "image": "xavier_winters_sun_4_lunar_2024-09-14.webp"
+  },
+  {
+    "id": "card_55cccb",
+    "name": "Enlightenment",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_enlightenment_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_fa9a4f",
+    "name": "Starry Sound",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_starry_sound_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_dee5a7",
+    "name": "Dreaming",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_dreaming_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b826ac",
+    "name": "Warm Wishes",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_warm_wishes_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4b511d",
+    "name": "Spring Letter",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_spring_letter_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_a4d0f1",
+    "name": "Dawn To Dusk",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_dawn_to_dusk_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_26f6ea",
+    "name": "Galactic Harmony",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_galactic_harmony_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_a14e87",
+    "name": "Shimmering Sunlight",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_shimmering_sunlight_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_74224f",
+    "name": "Dreams Within Reach",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_dreams_within_reach_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_2a58eb",
+    "name": "A Day Of Snow",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_a_day_of_snow_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_cf56d8",
+    "name": "Kind Words",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_kind_words_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_cc780e",
+    "name": "Lost Signal",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-06-13",
+    "image": "xavier_lost_signal_4_lunar_2024-06-13.webp"
+  },
+  {
+    "id": "card_0f3b5a",
+    "name": "Perfect Sunset",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_perfect_sunset_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_56144f",
+    "name": "A Captured Moment",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_a_captured_moment_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_a52f61",
+    "name": "Succumb",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-03-17",
+    "image": "xavier_succumb_4_lunar_2024-03-17.webp"
+  },
+  {
+    "id": "card_7c4583",
+    "name": "Close Feelings",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_close_feelings_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_3dc168",
+    "name": "Gaze",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_gaze_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f921c1",
+    "name": "Blade",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_blade_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_be1b00",
+    "name": "Apple Of My Eye",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_apple_of_my_eye_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_d1d2e5",
+    "name": "Good Morning",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_good_morning_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_8bcf92",
+    "name": "Heart-to-Heart",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_heart-to-heart_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_83349b",
+    "name": "Light Chaser",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2026-10-11",
+    "image": "xavier_light_chaser_3_lunar_2026-10-11.webp"
+  },
+  {
+    "id": "card_f9843d",
+    "name": "Starry Stroll",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-10-11",
+    "image": "xavier_starry_stroll_3_lunar_2025-10-11.webp"
+  },
+  {
+    "id": "card_344ebe",
+    "name": "Silent Swipe",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-07-25",
+    "image": "xavier_silent_swipe_3_lunar_2025-07-25.webp"
+  },
+  {
+    "id": "card_8e48f6",
+    "name": "Unfading Wish",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-10-11",
+    "image": "xavier_unfading_wish_3_lunar_2024-10-11.webp"
+  },
+  {
+    "id": "card_2f6742",
+    "name": "Ardent Threads",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "xavier_ardent_threads_3_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_fbfad7",
+    "name": "Real Look",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-05-13",
+    "image": "xavier_real_look_3_lunar_2024-05-13.webp"
+  },
+  {
+    "id": "card_354aa9",
+    "name": "Calls",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_calls_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_ee51fb",
+    "name": "Holding Hands",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_holding_hands_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_942341",
+    "name": "About To Hit The Ball",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_about_to_hit_the_ball_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_99b499",
+    "name": "Recall",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_recall_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_6dd6ab",
+    "name": "Reflection",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_reflection_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_70eac7",
+    "name": "The Rain",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_the_rain_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_2f01ac",
+    "name": "Combat Ready",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_combat_ready_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_369ce8",
+    "name": "Listen",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_listen_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_61ce70",
+    "name": "Nestle",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_nestle_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_6f896e",
+    "name": "Bad Idea",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_bad_idea_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_8ae740",
+    "name": "Guardian",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_guardian_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_cd0640",
+    "name": "Energy Drink",
+    "character": "Xavier",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_energy_drink_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_5fd777",
+    "name": "Lightseeking Shadowrend",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_lightseeking_shadowrend_5_solar_2024-01-18_pair1.webp",
+    "mythName": "Shooting Stars",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_7d592b",
+    "name": "Lightseeking Obsession",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_lightseeking_obsession_5_solar_2024-01-18_pair2.webp",
+    "mythName": "Shooting Stars",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_e8ecb7",
+    "name": "Midnight Rainfall",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-05-13",
+    "image": "xavier_midnight_rainfall_5_solar_2024-05-13_pair1.webp",
+    "mythName": "Twilight's Dawn",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_579086",
+    "name": "Midnight Whispers",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-05-13",
+    "image": "xavier_midnight_whispers_5_solar_2024-05-13_pair2.webp",
+    "mythName": "Twilight's Dawn",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_67cd26",
+    "name": "Nightvow Mooncurse",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-07-25",
+    "image": "xavier_nightvow_mooncurse_5_solar_2025-07-25_pair1.webp",
+    "mythName": "Where Stars Scatter",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_469c2d",
+    "name": "Nightvow Requiem",
+    "character": "Xavier",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-07-25",
+    "image": "xavier_nightvow_requiem_5_solar_2025-07-25_pair2.webp",
+    "mythName": "Where Stars Scatter",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_3fc881",
+    "name": "Checkup",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_checkup_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_bbaa90",
+    "name": "Shattered Simulacrum",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-06",
+    "image": "zayne_shattered_simulacrum_5_lunar_2026-11-06.webp"
+  },
+  {
+    "id": "card_01f98e",
+    "name": "Past Midnight",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-09-22",
+    "image": "zayne_past_midnight_5_lunar_2026-09-22.webp"
+  },
+  {
+    "id": "card_52f231",
+    "name": "When Embers Rise",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-08-31",
+    "image": "zayne_when_embers_rise_5_lunar_2026-08-31.webp"
+  },
+  {
+    "id": "card_eecaa1",
+    "name": "Framed Dusk",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-07-18",
+    "image": "zayne_framed_dusk_5_lunar_2026-07-18.webp"
+  },
+  {
+    "id": "card_3aad9f",
+    "name": "Dawn and Devotion",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-06-17",
+    "image": "zayne_dawn_and_devotion_5_lunar_2026-06-17.webp"
+  },
+  {
+    "id": "card_17f969",
+    "name": "Silent Underflow",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-04-30",
+    "image": "zayne_silent_underflow_5_lunar_2026-04-30.webp"
+  },
+  {
+    "id": "card_825df1",
+    "name": "Entwined Kites",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-02-10",
+    "image": "zayne_entwined_kites_5_lunar_2026-02-10.webp"
+  },
+  {
+    "id": "card_a4a48d",
+    "name": "Secret's Kiss",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-01-23",
+    "image": "zayne_secrets_kiss_5_lunar_2026-01-23.webp"
+  },
+  {
+    "id": "card_4fc6a9",
+    "name": "Aeon's Canon",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "zayne_aeons_canon_5_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_868708",
+    "name": "Chilling Crescendo",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-10-29",
+    "image": "zayne_chilling_crescendo_5_lunar_2025-10-29.webp"
+  },
+  {
+    "id": "card_ac906b",
+    "name": "Dawnbreak Promise",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-08-31",
+    "image": "zayne_dawnbreak_promise_5_lunar_2025-08-31.webp"
+  },
+  {
+    "id": "card_021c48",
+    "name": "Runaway Waves",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-08-12",
+    "image": "zayne_runaway_waves_5_lunar_2025-08-12.webp"
+  },
+  {
+    "id": "card_251e31",
+    "name": "Iceborn Warmth",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-07-03",
+    "image": "zayne_iceborn_warmth_5_lunar_2025-07-03.webp"
+  },
+  {
+    "id": "card_ab7afb",
+    "name": "Fragrant Possession",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-04-30",
+    "image": "zayne_fragrant_possession_5_lunar_2025-04-30.webp"
+  },
+  {
+    "id": "card_ab8fc2",
+    "name": "Everlasting Wish",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-03-09",
+    "image": "zayne_everlasting_wish_5_lunar_2025-03-09.webp"
+  },
+  {
+    "id": "card_c62e18",
+    "name": "Immediate Disorder",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2025-02-10",
+    "image": "zayne_immediate_disorder_5_lunar_2025-02-10.webp"
+  },
+  {
+    "id": "card_18d231",
+    "name": "Absolute Zeal",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "zayne_absolute_zeal_5_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_813f30",
+    "name": "Engraved Affection",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-12-18",
+    "image": "zayne_engraved_affection_5_lunar_2024-12-18.webp"
+  },
+  {
+    "id": "card_c9f962",
+    "name": "Fluffy Treatment",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-11-12",
+    "image": "zayne_fluffy_treatment_5_lunar_2024-11-12.webp"
+  },
+  {
+    "id": "card_b17c7c",
+    "name": "Heartstring Notes",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-10-31",
+    "image": "zayne_heartstring_notes_5_lunar_2024-10-31.webp"
+  },
+  {
+    "id": "card_dc1f8e",
+    "name": "Frozen Nightfall",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-30",
+    "image": "zayne_frozen_nightfall_5_lunar_2024-09-30.webp"
+  },
+  {
+    "id": "card_0924e9",
+    "name": "Moonlit Dream",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-23",
+    "image": "zayne_moonlit_dream_5_lunar_2024-09-23.webp"
+  },
+  {
+    "id": "card_215e44",
+    "name": "Eternal Attachment",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-09-07",
+    "image": "zayne_eternal_attachment_5_lunar_2024-09-07.webp"
+  },
+  {
+    "id": "card_92d183",
+    "name": "Hidden Motive",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "zayne_hidden_motive_5_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_a642f3",
+    "name": "Snowy Serenity",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-06-25",
+    "image": "zayne_snowy_serenity_5_lunar_2024-06-25.webp"
+  },
+  {
+    "id": "card_d16058",
+    "name": "Heart Within Reach",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-03-11",
+    "image": "zayne_heart_within_reach_5_lunar_2024-03-11.webp"
+  },
+  {
+    "id": "card_2d79a9",
+    "name": "Exclusive Tutorial",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-04-30",
+    "image": "zayne_exclusive_tutorial_5_lunar_2024-04-30.webp"
+  },
+  {
+    "id": "card_bfb64a",
+    "name": "Gentle Twilight",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_gentle_twilight_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_515236",
+    "name": "Medical Rescue",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-02-21",
+    "image": "zayne_medical_rescue_5_lunar_2024-02-21.webp"
+  },
+  {
+    "id": "card_9398aa",
+    "name": "Drunken Intimacy",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-02-05",
+    "image": "zayne_drunken_intimacy_5_lunar_2024-02-05.webp"
+  },
+  {
+    "id": "card_9e8dae",
+    "name": "Business Trip",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_business_trip_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_307cc2",
+    "name": "Cozy Afternoon",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_cozy_afternoon_5_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_379c96",
+    "name": "Finale's Ache",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-09-25",
+    "image": "zayne_finales_ache_4_solar_2025-09-25.webp"
+  },
+  {
+    "id": "card_90854e",
+    "name": "Finale's Perpetuity",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2025-09-25",
+    "image": "zayne_finales_perpetuity_4_solar_2025-09-25.webp"
+  },
+  {
+    "id": "card_b04bd1",
+    "name": "Forest's Breeze",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-06-07",
+    "image": "zayne_forests_breeze_4_solar_2024-06-07.webp"
+  },
+  {
+    "id": "card_13f441",
+    "name": "Forest's Slumber",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-06-07",
+    "image": "zayne_forests_slumber_4_solar_2024-06-07.webp"
+  },
+  {
+    "id": "card_e39393",
+    "name": "Heartfelt Paradise",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_heartfelt_paradise_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_bf2b29",
+    "name": "Heartfelt Encounter",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_heartfelt_encounter_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_5e3b23",
+    "name": "Neon Night",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_neon_night_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_56c68e",
+    "name": "Starry Nocturne",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_starry_nocturne_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b14c5e",
+    "name": "Tranquil Moment",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_tranquil_moment_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b74702",
+    "name": "Tranquil Heart",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_tranquil_heart_4_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_8804c1",
+    "name": "End Of Depths",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "solar",
+    "releaseDate": "2024-02-21",
+    "image": "zayne_end_of_depths_4_solar_2024-02-21.webp"
+  },
+  {
+    "id": "card_c04f5b",
+    "name": "Your Voice",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-06-27",
+    "image": "zayne_your_voice_4_lunar_2026-06-27.webp"
+  },
+  {
+    "id": "card_237b8f",
+    "name": "Blooming Hour",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-05-10",
+    "image": "zayne_blooming_hour_4_lunar_2026-05-10.webp"
+  },
+  {
+    "id": "card_f24f47",
+    "name": "Chasing Silhouettes",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-03-01",
+    "image": "zayne_chasing_silhouettes_4_lunar_2026-03-01.webp"
+  },
+  {
+    "id": "card_01a2f1",
+    "name": "Frost Salvation",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-12-31",
+    "image": "zayne_frost_salvation_4_lunar_2025-12-31.webp"
+  },
+  {
+    "id": "card_e1bfc6",
+    "name": "Holding Autumn",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-10-29",
+    "image": "zayne_holding_autumn_4_lunar_2025-10-29.webp"
+  },
+  {
+    "id": "card_f8e8fe",
+    "name": "Morning Drift",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-07-03",
+    "image": "zayne_morning_drift_4_lunar_2025-07-03.webp"
+  },
+  {
+    "id": "card_1f40d3",
+    "name": "5th Intercostal Space",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-06-24",
+    "image": "zayne_5th_intercostal_space_4_lunar_2025-06-24.webp"
+  },
+  {
+    "id": "card_42c6e6",
+    "name": "Cherished Longing",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-01-22",
+    "image": "zayne_cherished_longing_4_lunar_2025-01-22.webp"
+  },
+  {
+    "id": "card_cf7bc9",
+    "name": "Silent Poem",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "zayne_silent_poem_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_0ed863",
+    "name": "Steamy Proximity",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2025-01-10",
+    "image": "zayne_steamy_proximity_4_lunar_2025-01-10.webp"
+  },
+  {
+    "id": "card_e89699",
+    "name": "Stacked Pulses",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-12-31",
+    "image": "zayne_stacked_pulses_4_lunar_2024-12-31.webp"
+  },
+  {
+    "id": "card_c29e47",
+    "name": "Dream Revisited",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-09-14",
+    "image": "zayne_dream_revisited_4_lunar_2024-09-14.webp"
+  },
+  {
+    "id": "card_b0c8cf",
+    "name": "Doomsday",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-08-23",
+    "image": "zayne_doomsday_4_lunar_2024-08-23.webp"
+  },
+  {
+    "id": "card_e29b76",
+    "name": "Beginning",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_beginning_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_3c47eb",
+    "name": "Destiny",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_destiny_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_0f9db4",
+    "name": "A Long Night",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_a_long_night_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_56e619",
+    "name": "Fleeting Sweetness",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_fleeting_sweetness_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b38041",
+    "name": "Thoughtful Words",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_thoughtful_words_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_ea64d6",
+    "name": "Secret Fairytale",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_secret_fairytale_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_861e76",
+    "name": "Delicacy",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_delicacy_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f06f3f",
+    "name": "Fragmented Dreams",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_fragmented_dreams_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_c26f1b",
+    "name": "Everlasting Snowdrop",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_everlasting_snowdrop_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_77e55e",
+    "name": "Glittering Lights",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_glittering_lights_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_9a5384",
+    "name": "Surprise Encounter",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_surprise_encounter_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_a9bf03",
+    "name": "Spring Remnants",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_spring_remnants_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_73e4db",
+    "name": "Lingering Warmth",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_lingering_warmth_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_25886a",
+    "name": "Heartstring Healer",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-05-14",
+    "image": "zayne_heartstring_healer_4_lunar_2024-05-14.webp"
+  },
+  {
+    "id": "card_e180cc",
+    "name": "Ramblings Come True",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_ramblings_come_true_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_1bd8c0",
+    "name": "Sweet Conspiracy",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_sweet_conspiracy_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_84d3ab",
+    "name": "Dawn's Shadows",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-02-05",
+    "image": "zayne_dawns_shadows_4_lunar_2024-02-05.webp"
+  },
+  {
+    "id": "card_43dbd9",
+    "name": "Thoughts",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_thoughts_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_25e9b8",
+    "name": "Playing Around",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_playing_around_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_83dcbb",
+    "name": "No",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_no_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_aefa6f",
+    "name": "Little World",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_little_world_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_b49c44",
+    "name": "Auscultation",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_auscultation_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_385459",
+    "name": "Onward Now",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2026-08-31",
+    "image": "zayne_onward_now_3_lunar_2026-08-31.webp"
+  },
+  {
+    "id": "card_9570a2",
+    "name": "Fated Reunion",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-09-25",
+    "image": "zayne_fated_reunion_3_lunar_2025-09-25.webp"
+  },
+  {
+    "id": "card_cafd07",
+    "name": "Crystal World",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2025-08-31",
+    "image": "zayne_crystal_world_3_lunar_2025-08-31.webp"
+  },
+  {
+    "id": "card_972933",
+    "name": "Shining Blessing",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-09-07",
+    "image": "zayne_shining_blessing_3_lunar_2024-09-07.webp"
+  },
+  {
+    "id": "card_0d7d58",
+    "name": "Treasure In Palm",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-08-07",
+    "image": "zayne_treasure_in_palm_3_lunar_2024-08-07.webp"
+  },
+  {
+    "id": "card_cda63b",
+    "name": "Secrets Of Fate",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-06-07",
+    "image": "zayne_secrets_of_fate_3_lunar_2024-06-07.webp"
+  },
+  {
+    "id": "card_2c7622",
+    "name": "Precious Treasure",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_precious_treasure_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_83b03f",
+    "name": "Doctor's Orders",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_doctors_orders_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_81a26d",
+    "name": "Aromatic",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_aromatic_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_4aef45",
+    "name": "Work Plan",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_work_plan_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f7fb96",
+    "name": "Clean-Up",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_clean-up_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_7ec745",
+    "name": "Injection Therapy",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_injection_therapy_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_50c41a",
+    "name": "Lost In Thought",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_lost_in_thought_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_bdf0d1",
+    "name": "Gaze From Afar",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_gaze_from_afar_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_f4883e",
+    "name": "Glasses",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_glasses_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_284653",
+    "name": "Waiting",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_waiting_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_1145c7",
+    "name": "Sweet Burden",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_sweet_burden_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_084555",
+    "name": "Demeanor",
+    "character": "Zayne",
+    "rarity": 3,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_demeanor_3_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_243a7c",
+    "name": "Diviner's Hymn",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-09-25",
+    "image": "zayne_diviners_hymn_5_solar_2025-09-25_pair1.webp",
+    "mythName": "Sacred Chapter",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_638d40",
+    "name": "Diviner's Stillness",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2025-09-25",
+    "image": "zayne_diviners_stillness_5_solar_2025-09-25_pair2.webp",
+    "mythName": "Sacred Chapter",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_9c06f1",
+    "name": "Snowfall Embrace",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-06-07",
+    "image": "zayne_snowfall_embrace_5_solar_2024-06-07_pair1.webp",
+    "mythName": "Snow's Embrace",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_81d0e9",
+    "name": "Snowfall Encounter",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-06-07",
+    "image": "zayne_snowfall_encounter_5_solar_2024-06-07_pair2.webp",
+    "mythName": "Snow's Embrace",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_44b539",
+    "name": "Forever Sealed",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_forever_sealed_5_solar_2024-01-18_pair1.webp",
+    "mythName": "Tower of Secrets",
+    "mythOrder": 1
+  },
+  {
+    "id": "card_27ced2",
+    "name": "Promise Everlasting",
+    "character": "Zayne",
+    "rarity": 5,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "zayne_promise_everlasting_5_solar_2024-01-18_pair2.webp",
+    "mythName": "Tower of Secrets",
+    "mythOrder": 2
+  },
+  {
+    "id": "card_f29bfb",
+    "name": "Invitation",
+    "character": "Rafayel",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-01-18",
+    "image": "rafayel_invitation_3_solar_2024-01-18.webp"
+  },
+  {
+    "id": "card_cd32aa",
+    "name": "In Charge",
+    "character": "Sylus",
+    "rarity": 3,
+    "type": "solar",
+    "releaseDate": "2024-07-15",
+    "image": "sylus_in_charge_3_solar_2024-07-15.webp"
+  },
+  {
+    "id": "card_4891e5",
+    "name": "Garden of Secrets",
+    "character": "Xavier",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2024-01-18",
+    "image": "xavier_garden_of_secrets_4_lunar_2024-01-18.webp"
   }
 ]

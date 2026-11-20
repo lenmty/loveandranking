@@ -2,12 +2,12 @@ import type { Language } from './types';
 
 export const copy = {
   ru: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Экспорт PNG', exporting: 'Идёт экспорт', share: 'Поделиться', groupMyths: 'Группировать мифы',
+    title: 'LoveAndRanking', subtitle: 'Рейтинг воспоминаний Love and Deepspace', export: 'Экспорт PNG', exporting: 'Идёт экспорт', share: 'Поделиться', groupMyths: 'Группировать мифы',
     mythPair: 'Пара мифа', swapMythOrder: 'Поменять порядок карт в пачке',
     addTier: 'Добавить уровень', pool: 'Карты', search: 'Поиск по названию',
     sortDate: 'По дате', sortRarity: 'По редкости', sortCharacter: 'По фавориту',
     oldest: 'Сначала старые', newest: 'Сначала новые', filters: 'Фильтры',
-    character: 'Персонаж', rarity: 'Редкость', type: 'Тип', all: 'Все',
+    character: 'Фаворит', rarity: 'Редкость', type: 'Тип', all: 'Все',
     solar: 'Solar', lunar: 'Lunar', stars3: '3 звезды', stars4: '4 звезды', stars5: '5 звёзд',
     emptyPool: 'Нет карточек по выбранным условиям', emptyTier: 'Перетащите карту сюда',
     moveTier: 'Изменить порядок уровня', deleteTier: 'Удалить уровень',
@@ -32,12 +32,12 @@ export const copy = {
     shareLink: 'Ссылка на рейтинг', copyLink: 'Скопировать ссылку', shareCopyFailed: 'Не удалось скопировать ссылку. Выделите её и скопируйте вручную.',
   },
   en: {
-    title: 'CardRank', subtitle: 'Love and Deepspace', export: 'Export PNG', exporting: 'Exporting', share: 'Share', groupMyths: 'Group myths',
+    title: 'LoveAndRanking', subtitle: 'Rank Love and Deepspace memories', export: 'Export PNG', exporting: 'Exporting', share: 'Share', groupMyths: 'Group myths',
     mythPair: 'Myth pair', swapMythOrder: 'Swap the order of memories in the pair',
     addTier: 'Add tier', pool: 'Memories', search: 'Search memories',
     sortDate: 'By date', sortRarity: 'By rarity', sortCharacter: 'By Love Interest',
     oldest: 'Oldest first', newest: 'Newest first', filters: 'Filters',
-    character: 'Character', rarity: 'Rarity', type: 'Type', all: 'All',
+    character: 'LI', rarity: 'Rarity', type: 'Type', all: 'All',
     solar: 'Solar', lunar: 'Lunar', stars3: '3 stars', stars4: '4 stars', stars5: '5 stars',
     emptyPool: 'No memories match these filters', emptyTier: 'Drop a memory here',
     moveTier: 'Reorder tier', deleteTier: 'Delete tier',

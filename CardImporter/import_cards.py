@@ -42,14 +42,14 @@ TYPE_MIN_MARGIN = 0.15
 RARITY_MIN_TEMPLATE_CORRELATION = 0.50
 RARITY_MIN_COMPONENT_BALANCE = 0.65
 
-FILENAME_RE = re.compile(r"^(?P<date>\d{2}\.\d{2}\.\d{2}(?:\d{2})?)(?:_(?P<suffix>.*))?$")
+FILENAME_RE = re.compile(r"^(?P<date>\d{1,2}\.\d{1,2}\.\d{2}(?:\d{2})?)(?:_(?P<suffix>.*))?$")
 PAIR_RE = re.compile(r"^(?P<myth>.+)_(?P<order>[12])$", re.IGNORECASE)
 
 
 def parse_filename(path: Path) -> Dict[str, Any]:
     match = FILENAME_RE.fullmatch(path.stem)
     if not match:
-        raise ValueError("filename must start with DD.MM.YY or DD.MM.YYYY")
+        raise ValueError("filename must start with D.M.YY or D.M.YYYY (day and month may be zero-padded)")
     raw_date = match.group("date")
     parts = raw_date.split(".")
     day, month, year = (int(part) for part in parts)
@@ -377,6 +377,10 @@ def prepare_image(source: Path) -> Dict[str, Any]:
     stars_crop = preview.crop(stars_box)
     ocr_box = scaled_box(panel, OCR_RELATIVE)
     ocr_crop = crop_box(screenshot, ocr_box)
+    # The title row is small in the game screenshot and can wrap onto two
+    # lines. Upscaling preserves the crop bounds while giving Vision more
+    # pixels per glyph.
+    ocr_crop = ocr_crop.resize((ocr_crop.width * 2, ocr_crop.height * 2), Image.Resampling.LANCZOS)
     card_type, type_scores = recognize_type(type_crop)
     rarity, rarity_metrics = recognize_rarity(stars_crop)
     return {
@@ -435,13 +439,22 @@ def parse_ocr(result: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], flo
         candidates = observation.get("candidates") or []
         if not candidates:
             continue
-        best = candidates[0]
+        favorite_pattern = re.compile(r"\b(Xavier|Zayne|Rafayel|Caleb|Sylus)\b", re.IGNORECASE)
+        best = max(
+            candidates,
+            key=lambda candidate: (
+                bool(favorite_pattern.search(str(candidate.get("text", "")))),
+                float(candidate.get("confidence", 0.0)),
+            ),
+        )
         text = str(best.get("text", "")).strip()
         confidence = float(best.get("confidence", 0.0))
         box = observation.get("box") or [0.0, 0.0, 0.0, 0.0]
-        lines.append((float(box[0]), text, confidence))
+        # Vision uses a bottom-left origin; sorting by descending Y joins
+        # wrapped title lines in their natural top-to-bottom order.
+        lines.append((float(box[1]), text, confidence))
         raw_lines.append({"text": text, "confidence": confidence, "box": box, "candidates": candidates})
-    combined = " ".join(text for _x, text, _confidence in sorted(lines))
+    combined = " ".join(text for _y, text, _confidence in sorted(lines, reverse=True))
     match = re.search(r"\b(Xavier|Zayne|Rafayel|Caleb|Sylus)\s*:\s*(.+)$", combined, re.IGNORECASE)
     confidence = min((item[2] for item in lines), default=0.0)
     if not match:
