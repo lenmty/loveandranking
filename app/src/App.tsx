@@ -211,6 +211,7 @@ export function App() {
   const [shareCopyFailed, setShareCopyFailed] = useState(false);
   const [poolDockVisible, setPoolDockVisible] = useState(false);
   const [poolDockExpanded, setPoolDockExpanded] = useState(false);
+  const [poolGridReserveHeight, setPoolGridReserveHeight] = useState(0);
   const [poolGridHeight, setPoolGridHeight] = useState<number | null>(null);
   const [dragPreview, setDragPreview] = useState<{ card: Card; pairCount: number; width: number; height: number; offsetX: number; offsetY: number; x: number; y: number } | null>(null);
   const dragPreviewElementRef = useRef<HTMLElement | null>(null);
@@ -219,6 +220,9 @@ export function App() {
   const dragSourceRemovedRef = useRef(false);
   const [dragSourceRemoved, setDragSourceRemoved] = useState(false);
   const poolGridRef = useRef<HTMLDivElement | null>(null);
+  const poolGridAnchorRef = useRef<HTMLDivElement | null>(null);
+  const poolGridViewportRef = useRef<HTMLDivElement | null>(null);
+  const poolDockVisibleRef = useRef(false);
   const shareCopyButtonRef = useRef<HTMLButtonElement | null>(null);
   const shareCopyTimerRef = useRef<number | null>(null);
   const pendingPoolGridAnimationRef = useRef(false);
@@ -518,15 +522,23 @@ export function App() {
 
   useEffect(() => {
     const grid = poolGridRef.current;
-    if (!grid) return;
+    const anchor = poolGridAnchorRef.current;
+    if (!grid || !anchor) return;
     const mobile = window.matchMedia('(max-width: 640px)');
     const updateDockVisibility = () => {
       if (!mobile.matches) {
+        if (poolDockVisibleRef.current && poolGridViewportRef.current) poolGridViewportRef.current.scrollTop = 0;
+        poolDockVisibleRef.current = false;
         setPoolDockVisible(false);
+        setPoolGridReserveHeight(0);
         return;
       }
-      const bounds = grid.getBoundingClientRect();
-      setPoolDockVisible(bounds.top >= window.innerHeight);
+      const shouldDock = anchor.getBoundingClientRect().top >= window.innerHeight;
+      const naturalHeight = grid.scrollHeight;
+      setPoolGridReserveHeight((current) => shouldDock && Math.abs(current - naturalHeight) > 1 ? naturalHeight : shouldDock ? current : 0);
+      if (poolDockVisibleRef.current && !shouldDock && poolGridViewportRef.current) poolGridViewportRef.current.scrollTop = 0;
+      poolDockVisibleRef.current = shouldDock;
+      setPoolDockVisible(shouldDock);
     };
     updateDockVisibility();
     window.addEventListener('scroll', updateDockVisibility, { passive: true });
@@ -845,31 +857,28 @@ export function App() {
         </div>
         <button type="button" className="date-direction" onClick={() => dispatch({ type: 'sort', mode: state.sortMode, direction: state.dateDirection === 'asc' ? 'desc' : 'asc' })} aria-label={state.dateDirection === 'asc' ? t.newest : t.oldest} title={state.dateDirection === 'asc' ? t.newest : t.oldest}><span className={state.dateDirection === 'desc' ? 'direction-up' : ''}>↓</span>{state.dateDirection === 'asc' ? t.oldest : t.newest}</button>
       </div>
-      <div ref={poolGridRef} style={poolGridHeight === null ? undefined : { height: `${poolGridHeight}px` }} onTransitionEnd={(event) => { if (event.propertyName === 'height') setPoolGridHeight(null); }} className={`pool-grid drop-zone ${poolGridHeight !== null ? 'pool-grid--animating' : ''} ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length} aria-hidden={poolDockVisible || undefined}>
-        {renderPoolCards()}
-      </div>
+      <div ref={poolGridAnchorRef} className="pool-grid-anchor" aria-hidden="true" style={poolDockVisible ? { height: `${poolGridReserveHeight}px` } : undefined}/>
+      <aside className={`mobile-pool-dock ${poolDockVisible ? 'mobile-pool-dock--docked' : ''} ${poolDockExpanded ? 'mobile-pool-dock--expanded' : ''}`} aria-label={t.pool}>
+        <button className="mobile-pool-dock-toggle" type="button" aria-expanded={poolDockExpanded}
+          aria-label={poolDockExpanded ? (state.language === 'ru' ? 'Свернуть общую стопку' : 'Collapse memory pool') : (state.language === 'ru' ? 'Развернуть общую стопку' : 'Expand memory pool')}
+          onClick={() => setPoolDockExpanded((expanded) => !expanded)}>
+          <span className="mobile-pool-dock-count">{visiblePool.length}</span>
+          <svg className="mobile-pool-dock-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            {poolDockExpanded ? <path d="m6 9 6 6 6-6"/> : <path d="m6 15 6-6 6 6"/>}
+          </svg>
+        </button>
+        <div ref={poolGridViewportRef} className="mobile-pool-dock-scroll" aria-label={t.pool}>
+          <div ref={poolGridRef} style={poolGridHeight === null ? undefined : { height: `${poolGridHeight}px` }} onTransitionEnd={(event) => { if (event.propertyName === 'height') setPoolGridHeight(null); }} className={`pool-grid ${poolDockVisible ? 'mobile-pool-dock-grid' : ''} drop-zone ${poolGridHeight !== null ? 'pool-grid--animating' : ''} ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length}>
+            {renderPoolCards()}
+          </div>
+        </div>
+      </aside>
     </section>
 
     <footer className="site-footer">
       <p>Made by <a href="https://t.me/catdoge" target="_blank" rel="noreferrer">@CatDoge</a> — feel free to message me!</p>
       <p>More from me: <a href="https://catdoge.notion.site/LaDs-2b9f93ac8a10803f985be67ab9a9c4a9" target="_blank" rel="noreferrer">LaDS Content Timeline</a> <span aria-hidden="true">↗</span></p>
     </footer>
-
-    <aside className={`mobile-pool-dock ${poolDockVisible ? 'mobile-pool-dock--visible' : ''} ${poolDockExpanded ? 'mobile-pool-dock--expanded' : ''}`} aria-label={t.pool} aria-hidden={!poolDockVisible}>
-      <button className="mobile-pool-dock-toggle" type="button" aria-expanded={poolDockExpanded}
-        aria-label={poolDockExpanded ? (state.language === 'ru' ? 'Свернуть общую стопку' : 'Collapse memory pool') : (state.language === 'ru' ? 'Развернуть общую стопку' : 'Expand memory pool')}
-        onClick={() => setPoolDockExpanded((expanded) => !expanded)}>
-        <span className="mobile-pool-dock-count">{visiblePool.length}</span>
-        <svg className="mobile-pool-dock-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          {poolDockExpanded ? <path d="m6 9 6 6 6-6"/> : <path d="m6 15 6-6 6 6"/>}
-        </svg>
-      </button>
-      <div className="mobile-pool-dock-scroll" aria-label={t.pool}>
-        <div className={`pool-grid mobile-pool-dock-grid drop-zone ${visiblePool.length ? '' : 'pool-grid--empty'} ${state.dropTarget?.zone === 'pool' ? 'is-drop-target' : ''}`} data-drop-zone="pool" data-drop-count={state.pool.length}>
-          {renderPoolCards()}
-        </div>
-      </div>
-    </aside>
 
     {dragPreview && <article ref={(element) => { dragPreviewElementRef.current = element; }} className={`card-tile card-drag-preview ${dragPreview.pairCount > 1 ? 'card-tile--myth-stack' : ''}`} aria-hidden="true"
       style={{ width: dragPreview.width, height: dragPreview.height, transform: `translate3d(${dragPreview.x}px, ${dragPreview.y}px, 0)` }}>
