@@ -218,7 +218,9 @@ export function App() {
   const dragPreviewOffsetRef = useRef<{ x: number; y: number } | null>(null);
   const dragOriginBoundsRef = useRef<DOMRect | null>(null);
   const dragSourceRemovedRef = useRef(false);
+  const cardPointerIdRef = useRef<number | null>(null);
   const [dragSourceRemoved, setDragSourceRemoved] = useState(false);
+  const cardDragStateKeyRef = useRef<string | null>(null);
   const poolGridRef = useRef<HTMLDivElement | null>(null);
   const poolGridAnchorRef = useRef<HTMLDivElement | null>(null);
   const poolGridViewportRef = useRef<HTMLDivElement | null>(null);
@@ -430,54 +432,75 @@ export function App() {
       setTierInsertionBoundary(null);
       dispatch({ type: 'start-tier-reorder', id: null });
     };
-    const handlePointerMove = (event: PointerEvent) => {
-      const tierPress = tierPressRef.current;
-      if (tierPress && tierPress.pointerId === event.pointerId) {
-        const boundary = findTierBoundary(event.clientY);
-        tierInsertionRef.current = boundary;
-        const from = tiersRef.current.findIndex((tier) => tier.id === tierPress.id);
-        const destination = boundary === null ? null : boundary > from ? boundary - 1 : boundary;
-        const visibleBoundary = destination === from ? null : boundary;
-        setTierInsertionBoundary((current) => current === visibleBoundary ? current : visibleBoundary);
-      }
-      if (!pointerRef.current) return;
+    const setCardDragState = (draggedId: string, target?: { zone: string; index: number; anchorId: string | null; after: boolean }) => {
+      const key = target
+        ? `${draggedId}|${target.zone}|${target.index}|${target.anchorId ?? ''}|${target.after ? 1 : 0}`
+        : `${draggedId}|none`;
+      if (cardDragStateKeyRef.current === key) return;
+      cardDragStateKeyRef.current = key;
+      dispatch(target ? { type: 'drag-state', id: draggedId, ...target } : { type: 'drag-state', id: draggedId });
+    };
+    const updateCardDropTarget = (clientX: number, clientY: number, movePreview: boolean, allowSourceRemoval: boolean) => {
+      const draggedId = pointerRef.current;
+      if (!draggedId) return;
       const origin = dragOriginBoundsRef.current;
       const previewOffset = dragPreviewOffsetRef.current;
-      const dropX = origin && previewOffset ? event.clientX - previewOffset.x + origin.width / 2 : event.clientX;
-      const dropY = origin && previewOffset ? event.clientY - previewOffset.y + origin.height / 2 : event.clientY;
-      if (origin && !dragSourceRemovedRef.current && (dropX < origin.left || dropX > origin.right || dropY < origin.top || dropY > origin.bottom)) {
+      const dropX = origin && previewOffset ? clientX - previewOffset.x + origin.width / 2 : clientX;
+      const dropY = origin && previewOffset ? clientY - previewOffset.y + origin.height / 2 : clientY;
+      const draggedCard = [...document.querySelectorAll<HTMLElement>('[data-card-id]')]
+        .find((item) => item.dataset.cardId === draggedId);
+      const sourceBounds = !dragSourceRemovedRef.current
+        ? draggedCard?.getBoundingClientRect() ?? origin
+        : origin;
+      if (allowSourceRemoval && sourceBounds && !dragSourceRemovedRef.current && (dropX < sourceBounds.left || dropX > sourceBounds.right || dropY < sourceBounds.top || dropY > sourceBounds.bottom)) {
         dragSourceRemovedRef.current = true;
         setDragSourceRemoved(true);
       }
-      if (previewOffset && dragPreviewElementRef.current) {
-        dragPreviewElementRef.current.style.transform = `translate3d(${event.clientX - previewOffset.x}px, ${event.clientY - previewOffset.y}px, 0)`;
+      if (movePreview && previewOffset && dragPreviewElementRef.current) {
+        dragPreviewElementRef.current.style.transform = `translate3d(${clientX - previewOffset.x}px, ${clientY - previewOffset.y}px, 0)`;
       }
       if (!dragSourceRemovedRef.current) {
-        dispatch({ type: 'drag-state', id: pointerRef.current });
+        setCardDragState(draggedId);
         return;
       }
       const target = document.elementFromPoint(dropX, dropY)?.closest<HTMLElement>('[data-drop-zone]');
       if (target) {
         const targetId = target.dataset.dropZone!;
         const position = cardDropPosition(target, dropX, dropY);
-        const draggedCard = [...document.querySelectorAll<HTMLElement>('[data-card-id]')]
-          .find((item) => item.dataset.cardId === pointerRef.current);
         const sourceZone = draggedCard?.dataset.cardZone;
         const sourceIndex = Number(draggedCard?.dataset.cardIndex ?? -1);
         const finalIndex = sourceZone === targetId && sourceIndex >= 0 && sourceIndex < position.index
           ? position.index - 1
           : position.index;
-        if (sourceZone === targetId && sourceIndex === finalIndex && !dragSourceRemovedRef.current) {
-          dispatch({ type: 'drag-state', id: pointerRef.current });
-        } else {
-          dispatch({ type: 'drag-state', id: pointerRef.current, zone: targetId, ...position });
-        }
-      } else dispatch({ type: 'drag-state', id: pointerRef.current });
+        const normalizedPosition = { ...position, zone: targetId };
+        if (sourceZone === targetId && sourceIndex === finalIndex && !dragSourceRemovedRef.current) setCardDragState(draggedId);
+        else setCardDragState(draggedId, normalizedPosition);
+      } else setCardDragState(draggedId);
+    };
+    const updateTierInsertion = (clientY: number) => {
+      const press = tierPressRef.current;
+      if (!press) return;
+      const boundary = findTierBoundary(clientY);
+      tierInsertionRef.current = boundary;
+      const from = tiersRef.current.findIndex((tier) => tier.id === press.id);
+      const destination = boundary === null ? null : boundary > from ? boundary - 1 : boundary;
+      const visibleBoundary = destination === from ? null : boundary;
+      setTierInsertionBoundary((current) => current === visibleBoundary ? current : visibleBoundary);
+    };
+    const handlePointerMove = (event: PointerEvent) => {
+      const tierPress = tierPressRef.current;
+      if (tierPress && tierPress.pointerId === event.pointerId) {
+        updateTierInsertion(event.clientY);
+      }
+      if (!pointerRef.current || event.pointerId !== cardPointerIdRef.current) return;
+      updateCardDropTarget(event.clientX, event.clientY, true, true);
     };
     const handlePointerUp = (event: PointerEvent) => {
-      clearTierPress(event, true);
+      if (tierPressRef.current?.pointerId === event.pointerId) clearTierPress(event, true);
       const draggedId = pointerRef.current;
-      if (draggedId && dragSourceRemovedRef.current) {
+      if (!draggedId || event.pointerId !== cardPointerIdRef.current) return;
+      updateCardDropTarget(event.clientX, event.clientY, false, false);
+      if (dragSourceRemovedRef.current) {
         const origin = dragOriginBoundsRef.current;
         const offset = dragPreviewOffsetRef.current;
         const dropX = origin && offset ? event.clientX - offset.x + origin.width / 2 : event.clientX;
@@ -487,8 +510,10 @@ export function App() {
           const position = cardDropPosition(target, dropX, dropY);
           dispatch({ type: 'move-card', id: draggedId, zone: target.dataset.dropZone!, index: position.index });
         } else dispatch({ type: 'drag-state', id: null });
-      } else if (draggedId) dispatch({ type: 'drag-state', id: null });
+      } else dispatch({ type: 'drag-state', id: null });
       pointerRef.current = null;
+      cardPointerIdRef.current = null;
+      cardDragStateKeyRef.current = null;
       setDragPreview(null);
       dragPreviewElementRef.current = null;
       dragPreviewOffsetRef.current = null;
@@ -498,8 +523,11 @@ export function App() {
       document.body.classList.remove('is-dragging-card');
     };
     const handlePointerCancel = (event: PointerEvent) => {
-      clearTierPress(event);
+      if (tierPressRef.current?.pointerId === event.pointerId) clearTierPress(event);
+      if (!pointerRef.current || event.pointerId !== cardPointerIdRef.current) return;
       pointerRef.current = null;
+      cardPointerIdRef.current = null;
+      cardDragStateKeyRef.current = null;
       setDragPreview(null);
       dragPreviewElementRef.current = null;
       dragPreviewOffsetRef.current = null;
@@ -554,7 +582,10 @@ export function App() {
 
   const handleCardDrop = (id: string, zone: string, index: number) => dispatch({ type: 'move-card', id, zone, index });
   const beginCardDrag = (id: string, event: PointerEvent) => {
+    if (cardPointerIdRef.current !== null || tierPressRef.current !== null) return;
     pointerRef.current = id;
+    cardPointerIdRef.current = event.pointerId;
+    cardDragStateKeyRef.current = `${id}|none`;
     const tile = event.target instanceof Element ? event.target.closest<HTMLElement>('.card-tile') : null;
     const bounds = tile?.getBoundingClientRect();
     const card = cardsById.get(id);
@@ -575,6 +606,7 @@ export function App() {
     dispatch({ type: 'drag-state', id });
   };
   const beginTierPointer = (id: string, event: PointerEvent, handle: HTMLButtonElement) => {
+    if (cardPointerIdRef.current !== null || tierPressRef.current !== null) return;
     tierPressRef.current = { id, pointerId: event.pointerId };
     tierInsertionRef.current = null;
     setTierInsertionBoundary(null);

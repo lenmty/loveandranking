@@ -89,11 +89,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .tier-label--dark .color-dot { border-color: rgba(255,255,255,.75); }
 .tier-grip-rail { width: 26px; height: 26px; cursor: grab; touch-action: none; }
 .tier-grip-rail:active { cursor: grabbing; }
-.tier-actions { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 80px; }
+.tier-actions { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 80px; }
 .tier-actions .icon-button { width: 26px; height: 25px; color: var(--muted); }
 .tier-actions .icon-button:hover { color: var(--text); background: var(--surface-soft); }
 .color-dot { width: 12px; height: 12px; border: 2px solid color-mix(in srgb, var(--tier-color) 78%, var(--text)); border-radius: 50%; background: var(--tier-color); }
-.palette-popover { position: absolute; z-index: 10; top: 0; right: calc(100% + 5px); display: grid; grid-template-columns: repeat(5, 22px); gap: 7px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); box-shadow: var(--shadow); }
+.palette-popover { position: absolute; z-index: 20; top: 0; right: calc(100% + 5px); display: grid; grid-template-columns: repeat(5, 22px); gap: 7px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-solid); box-shadow: var(--shadow); }
 .palette-swatch { width: 22px; height: 22px; padding: 0; border: 2px solid transparent; border-radius: 7px; cursor: pointer; }
 .palette-swatch.is-selected { outline: 2px solid var(--accent); outline-offset: 2px; }
 .tier-content { position: relative; display: flex; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 4px; min-width: 0; min-height: 80px; padding: 0 8px; border-radius: 0; transition: background .15s ease; }
@@ -260,6 +260,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   .card-tile { flex-basis: 76px; }
   .card-insertion-slot { flex-basis: 76px; }
   .card-tile--tier, .card-insertion-slot--tier { width: var(--tier-card-size); height: var(--tier-card-size); }
+  .card-insertion-slot--tier { flex-basis: var(--tier-card-size); }
   .card-tile--tier { flex-basis: var(--tier-card-size); }
   .card-tile--tier .card-image-button, .card-tile--tier .card-image { width: var(--tier-card-size); height: var(--tier-card-size); }
   .card-drag-handle { top: 3px; right: 3px; width: 25px; height: 27px; opacity: .85; }
