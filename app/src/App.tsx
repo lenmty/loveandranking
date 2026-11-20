@@ -761,9 +761,9 @@ export function App() {
         context.restore();
 
         const lines = tierLines.get(tier.id) ?? [' '];
-        const nameBoxHeight = Math.max(34, lines.length * exportLineHeight + 12);
         const textX = rowX + 11;
-        const textY = y + (tierHeight - nameBoxHeight) / 2 + 6;
+        const textBlockHeight = lines.length * exportLineHeight;
+        const textY = y + (tierHeight - textBlockHeight) / 2;
         context.fillStyle = tierLabelUsesLightText(tier.color) ? '#fff' : dark ? '#eeefec' : '#25272a';
         context.font = exportFont;
         context.textBaseline = 'top';

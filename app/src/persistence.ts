@@ -6,6 +6,7 @@ import type { SortMode } from './types';
 const STORAGE_KEY = 'cardrank-state-v1';
 const validCharacters = new Set(characterOrder);
 const validCardTypes = new Set(['solar', 'lunar']);
+const hexColorPattern = /^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -31,7 +32,7 @@ export function loadAppState(catalog: Card[]): AppState {
     const direction = saved.dateDirection === 'desc' ? 'desc' : 'asc';
     const rawTiers = Array.isArray(saved.tiers) ? saved.tiers : initial.tiers;
     const tierRecords = rawTiers.filter((tier): tier is Record<string, unknown> =>
-      isRecord(tier) && typeof tier.id === 'string' && typeof tier.name === 'string' && typeof tier.color === 'string',
+      isRecord(tier) && typeof tier.id === 'string' && typeof tier.name === 'string',
     ).slice(0, 10);
     const tierSeeds = tierRecords.length ? tierRecords : initial.tiers;
     const claimed = new Set<string>();
@@ -41,7 +42,9 @@ export function loadAppState(catalog: Card[]): AppState {
       ))].filter((id) => !claimed.has(id)) : [];
       tierCards.forEach((id) => claimed.add(id));
       const name = String(tier.name).trim().slice(0, 70) || `Tier ${index + 1}`;
-      const color = tierPalette.includes(String(tier.color)) ? String(tier.color) : tierPalette[index % tierPalette.length];
+      const savedColor = typeof tier.color === 'string' && hexColorPattern.test(tier.color) ? tier.color : undefined;
+      const defaultColor = initial.tiers.find((defaultTier) => defaultTier.id === tier.id)?.color;
+      const color = savedColor ?? defaultColor ?? tierPalette[index % tierPalette.length];
       return { id: String(tier.id), name, color, cards: tierCards };
     });
     const poolFromStorage = [...new Set(validIds(saved.pool, cardIds) ?? initial.pool)];

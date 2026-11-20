@@ -5,6 +5,7 @@ const SHARE_PREFIX = '#rank=';
 const MAX_SHARE_HASH_LENGTH = 20_000;
 const MAX_DECOMPRESSED_BYTES = 96 * 1024;
 const CARD_ID_SUFFIX = /^card_([a-f\d]{6})$/i;
+const hexColorPattern = /^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
 
 export interface SharedRanking {
   tiers: Tier[];
@@ -128,9 +129,9 @@ export async function decodeSharedRanking(hash: string, catalog: Card[]): Promis
     if (name !== cleanName) repaired = true;
     name = cleanName || fallbackName;
     if (typeof rawName !== 'string' || !cleanName) repaired = true;
-    const color = typeof rawColor === 'string' && tierPalette.includes(rawColor)
+    const color = typeof rawColor === 'string' && hexColorPattern.test(rawColor)
       ? rawColor
-      : tierPalette[index % tierPalette.length];
+      : initialTiers[index]?.color ?? tierPalette[index % tierPalette.length];
     if (color !== rawColor) repaired = true;
     const ids = Array.isArray(rawCards) ? rawCards : [];
     if (!Array.isArray(rawCards)) repaired = true;
