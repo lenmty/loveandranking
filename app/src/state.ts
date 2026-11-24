@@ -50,7 +50,7 @@ export function sortCards(ids: string[], catalog: Card[], mode: SortMode, direct
     const name = left.name.localeCompare(right.name, undefined, { sensitivity: 'base' });
     if (mode === 'character-date') return character || date || rarity || type || name;
     if (mode === 'rarity-date') return rarity || date || character || type || name;
-    return date || character || rarity || type || name;
+    return date || rarity || type || character || name;
   });
 }
 
