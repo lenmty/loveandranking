@@ -4004,5 +4004,23 @@
     "type": "lunar",
     "releaseDate": "2024-01-18",
     "image": "xavier_garden_of_secrets_4_lunar_2024-01-18.webp"
+  },
+  {
+    "id": "card_53b8ee",
+    "name": "Abyss Recalled",
+    "character": "Sylus",
+    "rarity": 5,
+    "type": "lunar",
+    "releaseDate": "2026-11-25",
+    "image": "sylus_abyss_recalled_5_lunar_2026-11-25.webp"
+  },
+  {
+    "id": "card_f2163a",
+    "name": "Sips of Sweetness",
+    "character": "Zayne",
+    "rarity": 4,
+    "type": "lunar",
+    "releaseDate": "2026-11-25",
+    "image": "zayne_sips_of_sweetness_4_lunar_2026-11-25.webp"
   }
 ]
